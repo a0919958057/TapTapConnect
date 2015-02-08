@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="button_red">紅色</string>
+    <string name="button_green">綠色</string>
+</resources>
