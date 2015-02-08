@@ -189,10 +189,12 @@ public class MainActivity extends Activity {
 			this.view = v;
 			this.color = c;
 		}
-		
-//		public void stop() {
-//			this.isStop = false;
-//		}
+		/**
+		 * 停止DotGeneration的運作
+		 */
+		public void stop() {
+			this.isStop = false;
+		}
 
 		/**
 		 * 新執行緒之run()方法
