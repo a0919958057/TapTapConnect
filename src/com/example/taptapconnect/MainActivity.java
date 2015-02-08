@@ -190,9 +190,9 @@ public class MainActivity extends Activity {
 			this.color = c;
 		}
 		
-		public void stop() {
-			this.isStop = false;
-		}
+//		public void stop() {
+//			this.isStop = false;
+//		}
 
 		@Override
 		public void run() {
