@@ -189,7 +189,9 @@ public class MainActivity extends Activity {
 			this.view = v;
 			this.color = c;
 		}
-		
+		/**
+		 * °±¤îDotGenerationªº¹B§@
+		 */
 		public void stop() {
 			this.isStop = false;
 		}
