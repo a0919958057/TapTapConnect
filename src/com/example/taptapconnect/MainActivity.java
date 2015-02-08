@@ -138,28 +138,16 @@ public class MainActivity extends Activity {
 		}
 
 		@Override
-		public void onEmpty(GameEvent event) {
-			// TODO Auto-generated method stub
-			
-		}
+		public void onEmpty(GameEvent event) {}
 
 		@Override
-		public boolean onMove(GameEvent event) {
-			// TODO Auto-generated method stub
-			return false;
-		}
+		public boolean onMove(GameEvent event) {return false;}
 
 		@Override
-		public void onTouch(GameEvent event) {
-			// TODO Auto-generated method stub
-			
-		}
+		public void onTouch(GameEvent event) {}
 
 		@Override
-		public void onDelete(GameEvent event) {
-			// TODO Auto-generated method stub
-			
-		}
+		public void onDelete(GameEvent event) {}
 
 		}
 
