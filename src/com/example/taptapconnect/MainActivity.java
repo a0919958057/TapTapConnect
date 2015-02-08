@@ -194,6 +194,11 @@ public class MainActivity extends Activity {
 //			this.isStop = false;
 //		}
 
+		/**
+		 * 新執行緒之run()方法
+		 * 
+		 * 每{@value 1000}毫秒呼叫makedots一次
+		 */
 		@Override
 		public void run() {
 			while(!isStop) {
