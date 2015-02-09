@@ -8,7 +8,6 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Paint.Style;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 
 import com.example.taptapconnect.gameobject.GameObject;
@@ -22,6 +21,14 @@ import com.example.taptapconnect.gameobject.GameObjectHandler;
 public class DotView extends View {
 
 	private volatile List<GameObjectHandler> dotsArray;
+
+	public interface CanvasTransformation {
+
+		public void tranform(Canvas canvas);
+
+		public String getString();
+
+	}
 
 	/**
 	 * @param context
@@ -52,7 +59,8 @@ public class DotView extends View {
 	}
 
 	/**
-	 * @param a 遊戲群集之陣列
+	 * @param a
+	 *            遊戲群集之陣列
 	 */
 	public void setDotsArray(List<GameObjectHandler> a) {
 
@@ -65,33 +73,61 @@ public class DotView extends View {
 	 */
 	Paint paint = new Paint();
 	GameObject old;
+
 	@Override
 	protected void onDraw(Canvas canvas) {
+
+		modifyCanvas(canvas);
 		paint.setStyle(Style.STROKE);
 		paint.setColor(hasFocus() ? Color.BLUE : Color.GRAY);
 		canvas.drawRect(0, 0, getWidth() - 1, getHeight() - 1, paint);
 		if (null == dotsArray) {
 			return;
 		}
-		for(GameObjectHandler dots : dotsArray){
+		for (GameObjectHandler dots : dotsArray) {
 			for (GameObject dot : dots) {
-				if(old != null){
+				if (old != null) {
 					paint.setStyle(Style.FILL);
 					paint.setColor(dot.getColor());
-					paint.setStrokeWidth((float)4.0);
-					canvas.drawLine(old.getX(),
-							old.getY(),
-							dot.getX(),
+					paint.setStrokeWidth((float) 4.0);
+					canvas.drawLine(old.getX(), old.getY(), dot.getX(),
 							dot.getY(), paint);
 				}
 				paint.setStyle(Style.FILL);
 				paint.setColor(dot.getColor());
-				canvas.drawCircle(dot.getX(), dot.getY(), dot.getDiameter(), paint);
+				canvas.drawCircle(dot.getX(), dot.getY(), dot.getDiameter(),
+						paint);
 				old = dot;
-				
+
 			}
 			old = null;
 		}
+	}
+
+	private CanvasTransformation cvasTf;
+
+	/**
+	 * 設定CanvasTransformation
+	 * 
+	 * @param canvasTransformation
+	 *            實作CanvasTransformation之物件
+	 */
+
+	public void setTransformation(CanvasTransformation canvasTransformation) {
+		this.cvasTf = canvasTransformation;
+	}
+
+	/**
+	 * 引用設置過的CanvasTransformation.tranform方法修改引數之物件
+	 * 如果CanvasTransformation物件為null則do nothing
+	 * 
+	 * @param canvas 需修改的Canvas物件
+	 */
+	private void modifyCanvas(Canvas canvas) {
+		if (cvasTf != null) {
+			this.cvasTf.tranform(canvas);
+		}
+
 	}
 
 }

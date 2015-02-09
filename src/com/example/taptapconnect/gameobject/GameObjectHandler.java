@@ -49,6 +49,7 @@ public class GameObjectHandler implements Iterable<GameObject> {
 	public static int getHandlerCounter() {
 		return handlerCounter;
 	}
+	
 
 	/**
 	 * 設定遊戲物件聆聽器
@@ -184,10 +185,22 @@ public class GameObjectHandler implements Iterable<GameObject> {
 	 * @author ET
 	 */
 	public interface GameObjectListener {
+		
+//		private GameObjectHandler listenerOwner;
+//		
+//		public void setOnwer(GameObjectHandler onwer) {
+//			this.listenerOwner = onwer;
+//		}
+//		
+//		public GameObjectHandler getOnwer(){
+//			return this.listenerOwner;
+//		}
+		
 		/**
 		 * 當物件數改變時呼叫
 		 * @param event 
 		 */
+		
 		public void onChange(GameEvent event);
 
 		/**
@@ -214,7 +227,7 @@ public class GameObjectHandler implements Iterable<GameObject> {
 		 * 當有遊戲物件被刪除時呼叫
 		 * @param event 
 		 */
-		public void onDelete(GameEvent event);
+		public abstract void onDelete(GameEvent event);
 
 	}
 

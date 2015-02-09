@@ -4,12 +4,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.example.taptapconnect.dotview.DotView;
+import com.example.taptapconnect.dotview.DotView.CanvasTransformation;
 import com.example.taptapconnect.gameobject.GameEvent;
 import com.example.taptapconnect.gameobject.GameObject;
 import com.example.taptapconnect.gameobject.GameObjectHandler;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.graphics.Canvas;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
@@ -43,18 +45,18 @@ public class MainActivity extends Activity {
 		gamehandler1 = new GameObjectHandler();
 		gamehandler2 = new GameObjectHandler();
 		gamehandler3 = new GameObjectHandler();
-		
+
 		array.add(gamehandler1);
 		array.add(gamehandler2);
 		array.add(gamehandler3);
-		
-		Thread thread = new Thread(new DotGenerator(gamehandler3, dotview, Color.YELLOW));
+
+		Thread thread = new Thread(new DotGenerator(gamehandler3, dotview,
+				Color.YELLOW));
 		thread.start();
-		
-		for(GameObjectHandler object : array) {
-			object.setListener(new ObjectsLinstener());
+
+		for (GameObjectHandler object : array) {
+			object.setListener(new ObjectsLinstener(object));
 		}
-			
 
 		((Button) findViewById(R.id.button1))
 				.setOnClickListener(new ButtonListener());
@@ -83,9 +85,9 @@ public class MainActivity extends Activity {
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-		switch(item.getItemId()) {
+		switch (item.getItemId()) {
 		case R.id.manu_clear:
-			for(GameObjectHandler objects : array){
+			for (GameObjectHandler objects : array) {
 				objects.clear();
 			}
 		}
@@ -129,66 +131,117 @@ public class MainActivity extends Activity {
 		}
 
 	}
-	
-	class ObjectsLinstener implements GameObjectHandler.GameObjectListener {
 
+	class ObjectsLinstener implements GameObjectHandler.GameObjectListener {
+		
+		public GameObjectHandler linstenOnwer;
+		
+		public void setOnwer(GameObjectHandler onwer) {
+			this.linstenOnwer = onwer;
+		}
+		
+		public ObjectsLinstener() {
+			this(null);
+		} 
+		
+		public ObjectsLinstener(GameObjectHandler onwer) {
+			setOnwer(onwer);
+		} 
+		
 		@Override
 		public void onChange(GameEvent event) {
+			dotview.setTransformation(new CanvasTransformation() {
+				
+				@Override
+				public void tranform(Canvas canvas) {
+					canvas.translate(getModifyX(), getModifyY());
+					canvas.rotate((float)(linstenOnwer.getCount()*-12));
+
+					
+				}
+				@Override
+				public String getString() {
+					return null;
+				}
+				
+				private float getModifyX(){
+					double x = dotview.getWidth()/2;
+					double y = dotview.getHeight()/2;
+					return (float)(x+Math.sqrt(x*x+y*y)*(
+							Math.cos(Math.PI-Math.atan(y/x)+
+									(linstenOnwer.getCount()*Math.PI/15)))
+									);
+				}
+				
+				private float getModifyY(){
+					double x = dotview.getWidth()/2;
+					double y = dotview.getHeight()/2;
+					return (float)(y-Math.sqrt(x*x+y*y)*(
+							Math.sin(Math.PI-Math.atan(y/x)+
+									(linstenOnwer.getCount()*Math.PI/15)))
+									);
+				}
+			});
 			dotview.invalidate();
 		}
 
 		@Override
-		public void onEmpty(GameEvent event) {}
-
-		@Override
-		public boolean onMove(GameEvent event) {return false;}
-
-		@Override
-		public void onTouch(GameEvent event) {}
-
-		@Override
-		public void onDelete(GameEvent event) {}
-
+		public void onEmpty(GameEvent event) {
 		}
 
-	public void makeDot(GameObjectHandler dots, DotView view, int color) {
+		@Override
+		public boolean onMove(GameEvent event) {
+			return false;
+		}
 
-		dots.add(new GameObject(
-				(float) ((view.getWidth()/2)+
-						(view.getWidth()/2)*
-						(100.0/(100.0+(double)dots.getCount()))*
-						Math.cos(dots.getCount()*Math.PI/15)),
-				(float) ((view.getHeight()/2)+
-						(view.getHeight()/2)*
-						(100.0/(100.0+(double)dots.getCount()))*
-						Math.sin(dots.getCount()*Math.PI/15)),
-				color, (float) 10.0));
+		@Override
+		public void onTouch(GameEvent event) {
+		}
+
+		@Override
+		public void onDelete(GameEvent event) {
+		}
+
+	}
+
+	public void makeDot(final GameObjectHandler dots, DotView view, int color) {
+
+		dots.add(new GameObject((float) ((view.getWidth() / 2) + (view
+				.getWidth() / 2)
+				* (100.0 / (100.0 + (double) dots.getCount()))
+				* Math.cos(dots.getCount() * Math.PI / 15)), (float) ((view
+				.getHeight() / 2) + (view.getHeight() / 2)
+				* (100.0 / (100.0 + (double) dots.getCount()))
+				* Math.sin(dots.getCount() * Math.PI / 15)), color,
+				(float) 10.0));
+
 		view.setDotsArray(array);
 	}
-	
+
 	private class DotGenerator implements Runnable {
-		
+
 		final String TAG = this.getClass().getName();
 		volatile boolean isStop;
 		private GameObjectHandler gameobjects;
 		private DotView view;
 		private int color;
 		private Handler hdlr = new Handler();
-		public Runnable makedots = new Runnable(){
+		public Runnable makedots = new Runnable() {
 
 			@Override
 			public void run() {
 				makeDot(gameobjects, view, color);
-				
+
 			}
-			
+
 		};
-		
-		DotGenerator(GameObjectHandler objectHandler, DotView v,int c) {
+
+		DotGenerator(GameObjectHandler objectHandler, DotView v, int c) {
 			this.gameobjects = objectHandler;
 			this.view = v;
 			this.color = c;
 		}
+
 		/**
 		 * 停止DotGeneration的運作
 		 */
@@ -199,21 +252,21 @@ public class MainActivity extends Activity {
 		/**
 		 * 新執行緒之run()方法
 		 * 
-		 * 每{@value 1000}毫秒呼叫makedots一次
+		 * 每 1000} 毫秒呼叫makedots一次
 		 */
 		@Override
 		public void run() {
-			while(!isStop) {
+			while (!isStop) {
 				try {
 					Thread.sleep(1000);
 					hdlr.post(makedots);
-				} catch(java.lang.InterruptedException e) {
+				} catch (java.lang.InterruptedException e) {
 					Log.i(TAG, "DotGenerate stop!", e);
 				}
-				
+
 			}
-			
+
 		}
-		
+
 	}
 }
