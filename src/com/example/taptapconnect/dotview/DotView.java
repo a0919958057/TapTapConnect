@@ -94,11 +94,16 @@ public class DotView extends View {
 
 	@Override
 	protected void onDraw(Canvas canvas) {
-
-		modifyCanvas(canvas);
+		
 		paint.setStyle(Style.STROKE);
 		paint.setColor(hasFocus() ? Color.BLUE : Color.GRAY);
 		canvas.drawRect(0, 0, getWidth() - 1, getHeight() - 1, paint);
+		//儲存未更改時之Canvas
+		canvas.save();
+		
+		//TODO 需要整合進去為Drawable物件
+		//////////////////////////////////////////////////////////
+		modifyCanvas(canvas);
 		if (null == dotsArray) {
 			return;
 		}
@@ -120,6 +125,10 @@ public class DotView extends View {
 			}
 			old = null;
 		}
+		//////////////////////////////////////////////////////////
+		
+		//回復尚未修改之Canvas
+		canvas.restore();
 	}
 
 	private CanvasTransformation cvasTf;
