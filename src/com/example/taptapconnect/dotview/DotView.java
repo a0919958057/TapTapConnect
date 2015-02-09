@@ -9,7 +9,6 @@ import android.graphics.Paint;
 import android.graphics.Paint.Style;
 import android.util.AttributeSet;
 import android.view.View;
-
 import com.example.taptapconnect.gameobject.GameObject;
 import com.example.taptapconnect.gameobject.GameObjectHandler;
 
@@ -68,6 +67,25 @@ public class DotView extends View {
 
 	}
 
+	@Override
+	protected void onMeasure(int widthMeasureSpec,int heighMeasureSpec) {
+		setMeasuredDimension(measuredSpec(widthMeasureSpec), measuredSpec(heighMeasureSpec));
+		
+	}
+
+	private int measuredSpec(int measureSpec) {
+		int specMode = MeasureSpec.getMode(measureSpec);
+		int specSize = MeasureSpec.getSize(measureSpec);
+		if(specMode == MeasureSpec.EXACTLY) {
+			return specSize;
+		} else if(specMode == MeasureSpec.AT_MOST) {
+			return specSize;
+		} else {
+			return 0;
+		}
+				
+	}
+
 	/**
 	 * @see android.view.View#onDraw(android.graphics.Canvas)
 	 */
@@ -121,7 +139,8 @@ public class DotView extends View {
 	 * 引用設置過的CanvasTransformation.tranform方法修改引數之物件
 	 * 如果CanvasTransformation物件為null則do nothing
 	 * 
-	 * @param canvas 需修改的Canvas物件
+	 * @param canvas
+	 *            需修改的Canvas物件
 	 */
 	private void modifyCanvas(Canvas canvas) {
 		if (cvasTf != null) {
