@@ -154,8 +154,9 @@ public class MainActivity extends Activity {
 				
 				@Override
 				public void tranform(Canvas canvas) {
-					canvas.rotate((float)(linstenOnwer.getCount()*12));
-//					canvas.translate(getModifyX(), getModifyY());
+					canvas.translate(getModifyX(), getModifyY());
+					canvas.rotate((float)(linstenOnwer.getCount()*-12));
+
 					
 				}
 				@Override
@@ -164,22 +165,20 @@ public class MainActivity extends Activity {
 				}
 				
 				private float getModifyX(){
-					double x = dotview.getWidth();
-					double y = dotview.getHeight();
-					return (float)(x-Math.sqrt(x*x+y*y)*(
-							Math.cos(-Math.atan(y/x)+
-									(linstenOnwer.getCount()*Math.PI/15)))-
-									Math.cos(Math.atan(y/x))
+					double x = dotview.getWidth()/2;
+					double y = dotview.getHeight()/2;
+					return (float)(x+Math.sqrt(x*x+y*y)*(
+							Math.cos(Math.PI-Math.atan(y/x)+
+									(linstenOnwer.getCount()*Math.PI/15)))
 									);
 				}
 				
 				private float getModifyY(){
-					double x = dotview.getWidth();
-					double y = dotview.getHeight();
+					double x = dotview.getWidth()/2;
+					double y = dotview.getHeight()/2;
 					return (float)(y-Math.sqrt(x*x+y*y)*(
-							Math.cos(-Math.atan(y/x)+
-									(linstenOnwer.getCount()*Math.PI/15)))-
-									Math.sin(Math.atan(y/x))
+							Math.sin(Math.PI-Math.atan(y/x)+
+									(linstenOnwer.getCount()*Math.PI/15)))
 									);
 				}
 			});
