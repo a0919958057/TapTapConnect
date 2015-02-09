@@ -79,14 +79,14 @@ public class MainActivity extends Activity {
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.main, menu);
-		return true;
+		getMenuInflater().inflate(R.menu.manu_activity_actions, menu);
+		return super.onCreateOptionsMenu(menu);
 	}
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
-		case R.id.manu_clear:
+		case R.id.action_search:
 			for (GameObjectHandler objects : array) {
 				objects.clear();
 			}
