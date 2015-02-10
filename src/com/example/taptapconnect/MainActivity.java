@@ -3,6 +3,7 @@ package com.example.taptapconnect;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.example.taptapconnect.btDialogFragment.callbackDialog;
 import com.example.taptapconnect.dotview.DotView;
 import com.example.taptapconnect.dotview.DotView.CanvasTransformation;
 import com.example.taptapconnect.gameobject.GameEvent;
@@ -14,7 +15,8 @@ import android.app.ActionBar;
 import android.app.Activity;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
-import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.*;
+import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -33,6 +35,7 @@ import android.widget.FrameLayout;
 @SuppressLint("ClickableViewAccessibility")
 public class MainActivity extends Activity {
 
+	protected static final int BT_REQUEST_ENABLE = 0;
 	GameObjectHandler gamehandler1, gamehandler2, gamehandler3;
 	List<GameObjectHandler> array = new ArrayList<GameObjectHandler>();
 	DotView dotview;
@@ -51,6 +54,8 @@ public class MainActivity extends Activity {
 		dotview.setBackgroundColor(Color.BLACK);
 		((FrameLayout) findViewById(R.id.root2)).addView(dotview, 0);
 
+		setupBlueteeth();
+
 		gamehandler1 = new GameObjectHandler();
 		gamehandler2 = new GameObjectHandler();
 		gamehandler3 = new GameObjectHandler();
@@ -68,7 +73,7 @@ public class MainActivity extends Activity {
 			object.setListener(new ObjectsLinstener(object));
 		}
 
-		((Button) findViewById(R.id.button1))
+		((Button) findViewById(R.id.button_dialog1))
 				.setOnClickListener(new ButtonListener());
 		((Button) findViewById(R.id.button2))
 				.setOnClickListener(new ButtonListener());
@@ -111,7 +116,7 @@ public class MainActivity extends Activity {
 		@Override
 		public void onClick(View v) {
 			switch (v.getId()) {
-			case R.id.button1:
+			case R.id.button_dialog1:
 
 				makeDot(gamehandler1, dotview, Color.RED);
 				textview1.setText(String.valueOf(gamehandler1.peekGameObject()
@@ -135,7 +140,6 @@ public class MainActivity extends Activity {
 
 				// TODO 記得刪除
 				dotg.stop();
-				setupBlueteeth();
 
 				Log.i(this.getClass().getName(), "Button3 prass");
 				break;
@@ -285,12 +289,41 @@ public class MainActivity extends Activity {
 
 	void setupBlueteeth() {
 		mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-		// if (mBluetoothAdapter == null) {
-		btDialogFragment.newInstance(this,
-				btDialogFragment.DEVICES_NOT_FOUND, 6).show();
+		if (mBluetoothAdapter == null) {
+			btDialogFragment.newInstance(this,
+					btDialogFragment.DEVICES_NOT_ENABLE, 6).show();
 
-		Log.i(this.getClass().getSimpleName(), "create Succesful");
-		// }
+			Log.e(this.getClass().getSimpleName(), "Blueteeth Not Support");
+			return;
+		} else if (!mBluetoothAdapter.isEnabled()) {
+			btDialogFragment dialog;
+			(dialog = btDialogFragment.newInstance(this,
+					btDialogFragment.DEVICES_NOT_ENABLE, 6)).show();
+			dialog.setCallback(new callbackDialog() {
 
+				@Override
+				public void callback() {
+				    Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+				    startActivityForResult(enableBtIntent, BT_REQUEST_ENABLE);
+				}
+				
+			});
+			return;
+		}
 	}
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode,
+            Intent data)  {
+		switch(requestCode) {
+		case BT_REQUEST_ENABLE :
+			if(resultCode == RESULT_OK) {
+				//TODO:開始進行配對與搜尋
+				
+			} else if(resultCode == RESULT_CANCELED) {
+				finish();
+			}
+		}
+		
+	}
+
 }

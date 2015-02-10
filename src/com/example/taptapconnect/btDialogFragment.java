@@ -10,17 +10,21 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.webkit.WebView.FindListener;
+import android.widget.Button;
 
 public class btDialogFragment extends DialogFragment {
 
 	final static int DEVICES_NOT_SUPPORT = 0;
-	final static int DEVICES_NOT_FOUND = 1;
+	final static int DEVICES_NOT_ENABLE = 1;
 
 	int mNum;
 	private FragmentManager parentFM;
 	private Activity parentActivity;
 	private int dialogStatus;
+	private callbackDialog callback;
 	private volatile static String[] strarrays;
 	private volatile static Resources res;
 
@@ -34,6 +38,8 @@ public class btDialogFragment extends DialogFragment {
 	 * @param nNum
 	 *            設置DialogFragment之主題
 	 */
+	
+	
 	static btDialogFragment newInstance(Activity con, int status, int mNum) {
 		btDialogFragment f = new btDialogFragment(con, status);
 		res = con.getResources();
@@ -115,6 +121,24 @@ public class btDialogFragment extends DialogFragment {
 		// getDialog().requestWindowFeature(STYLE_NO_TITLE);
 		getDialog().setTitle(getStatusString(dialogStatus));
 		View v = inflater.inflate(R.layout.dialog_fragment, container);
+		Button b1,b2;
+		b1 = (Button)v.findViewById(R.id.button_dialog1);
+		b2 = (Button)v.findViewById(R.id.button_dialog2);
+		switch(dialogStatus){
+		case DEVICES_NOT_ENABLE :
+			b2.setText(res.getString(R.string.button_bt_enable));
+			b1.setText(res.getString(R.string.button_bt_cancel));
+			b2.setOnClickListener(new dialogListener());
+			b1.setOnClickListener(new dialogListener());
+			break;
+		case DEVICES_NOT_SUPPORT :
+			b2.setAlpha((float) 0.0);
+			b2.setClickable(false);
+			b1.setText(res.getString(R.string.button_bt_enable));
+			v.findViewById(R.id.button_dialog1).
+			setOnClickListener(new dialogListener());
+			break;
+		}
 		return v;
 
 	}
@@ -122,6 +146,22 @@ public class btDialogFragment extends DialogFragment {
 	public void setFragmentManager(FragmentManager fm) {
 		this.parentFM = fm;
 	}
+	
+	public class dialogListener implements OnClickListener {
+
+		@Override
+		public void onClick(View v) {
+			switch(v.getId()) {
+			case R.id.button_dialog1 :
+				parentActivity.finish();
+				break;
+			case R.id.button_dialog2 :
+				callback.callback();
+			}
+			
+		}
+	}
+	
 
 	public boolean show() {
 		if (parentFM != null) {
@@ -131,5 +171,11 @@ public class btDialogFragment extends DialogFragment {
 			return false;
 		}
 	}
+	public void setCallback(callbackDialog c){
+		this.callback = c;
+	}
 
+	static interface callbackDialog {
+		void callback();
+	}
 }
