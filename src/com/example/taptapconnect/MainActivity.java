@@ -54,7 +54,7 @@ public class MainActivity extends Activity {
 		dotview.setBackgroundColor(Color.BLACK);
 		((FrameLayout) findViewById(R.id.root2)).addView(dotview, 0);
 
-		setupBlueteeth();
+		setupBluetooth();
 
 		gamehandler1 = new GameObjectHandler();
 		gamehandler2 = new GameObjectHandler();
@@ -75,7 +75,7 @@ public class MainActivity extends Activity {
 
 		((Button) findViewById(R.id.button_dialog1))
 				.setOnClickListener(new ButtonListener());
-		((Button) findViewById(R.id.button2))
+		((Button) findViewById(R.id.button_bt_connect))
 				.setOnClickListener(new ButtonListener());
 		((Button) findViewById(R.id.button3))
 				.setOnClickListener(new ButtonListener());
@@ -125,7 +125,7 @@ public class MainActivity extends Activity {
 						.getY()));
 				Log.i(this.getClass().getName(), "Button1 prass");
 				break;
-			case R.id.button2:
+			case R.id.button_bt_connect:
 
 				makeDot(gamehandler2, dotview, Color.GREEN);
 				textview1.setText(String.valueOf(gamehandler2.peekGameObject()
@@ -287,7 +287,7 @@ public class MainActivity extends Activity {
 
 	}
 
-	void setupBlueteeth() {
+	void setupBluetooth() {
 		mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 		if (mBluetoothAdapter == null) {
 			btDialogFragment.newInstance(this,
@@ -303,27 +303,29 @@ public class MainActivity extends Activity {
 
 				@Override
 				public void callback() {
-				    Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-				    startActivityForResult(enableBtIntent, BT_REQUEST_ENABLE);
+					Intent enableBtIntent = new Intent(
+							BluetoothAdapter.ACTION_REQUEST_ENABLE);
+					startActivityForResult(enableBtIntent, BT_REQUEST_ENABLE);
 				}
-				
+
 			});
-			return;
+
 		}
+		startActivity(new Intent(this, BluetoothActivity.class));
 	}
+
 	@Override
-	protected void onActivityResult(int requestCode, int resultCode,
-            Intent data)  {
-		switch(requestCode) {
-		case BT_REQUEST_ENABLE :
-			if(resultCode == RESULT_OK) {
-				//TODO:開始進行配對與搜尋
-				
-			} else if(resultCode == RESULT_CANCELED) {
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		switch (requestCode) {
+		case BT_REQUEST_ENABLE:
+			if (resultCode == RESULT_OK) {
+				// TODO:開始進行配對與搜尋
+
+			} else if (resultCode == RESULT_CANCELED) {
 				finish();
 			}
 		}
-		
+
 	}
 
 }

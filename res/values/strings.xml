@@ -1,16 +1,25 @@
-
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <string name="button_red">紅色</string>
     <string name="button_green">綠色</string>
     <string name="app_name">點點遊戲</string>
     <string name="inspect_count">顯示數量</string>
     <string name="manu_clear_title">清除全部</string>
+
     <string-array name="dialog_status">
-        <item >找不到藍芽裝置</item>
-        <item >藍芽裝置尚未啟用</item>
-    </string-array><string name="action_search">搜尋</string>
+        <item>找不到藍芽裝置</item>
+        <item>藍芽裝置尚未啟用</item>
+    </string-array>
+
+    <string name="action_search">搜尋</string>
     <string name="button_bt_cancel">取消</string>
-    
-    <string name="button_bt_enable">啟用</string><string name="button_bt_ok">確定</string>
-    
+    <string name="button_bt_enable">啟用</string>
+    <string name="button_bt_ok">確定</string>
+    <string name="title_activity_bluetooth">BluetoothActivity</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="button_bt_connect">已配對</string>
+    <string name="button_bt_pair">未配對</string>
+
 </resources>

@@ -22,7 +22,7 @@ public class btDialogFragment extends DialogFragment {
 
 	int mNum;
 	private FragmentManager parentFM;
-	private Activity parentActivity;
+	private MainActivity parentActivity;
 	private int dialogStatus;
 	private callbackDialog callback;
 	private volatile static String[] strarrays;
@@ -40,7 +40,7 @@ public class btDialogFragment extends DialogFragment {
 	 */
 	
 	
-	static btDialogFragment newInstance(Activity con, int status, int mNum) {
+	static btDialogFragment newInstance(MainActivity con, int status, int mNum) {
 		btDialogFragment f = new btDialogFragment(con, status);
 		res = con.getResources();
 		strarrays = res.getStringArray(R.array.dialog_status);
@@ -55,7 +55,7 @@ public class btDialogFragment extends DialogFragment {
 		return ((strarrays == null) ? "strarray == null" : strarrays[index]);
 	}
 
-	public btDialogFragment( Activity con, int status) {
+	public btDialogFragment( MainActivity con, int status) {
 		this.dialogStatus = status;
 		this.parentActivity = con;
 		parentFM = con.getFragmentManager();
@@ -157,6 +157,7 @@ public class btDialogFragment extends DialogFragment {
 				break;
 			case R.id.button_dialog2 :
 				callback.callback();
+				dismiss();
 			}
 			
 		}

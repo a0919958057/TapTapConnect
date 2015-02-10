@@ -29,37 +29,48 @@ public final class R {
         public static final int ic_launcher=0x7f020001;
     }
     public static final class id {
-        public static final int FrameLayout1=0x7f090007;
-        public static final int action_search=0x7f09000b;
-        public static final int button2=0x7f090005;
-        public static final int button3=0x7f090006;
-        public static final int button_dialog1=0x7f090004;
-        public static final int button_dialog2=0x7f090009;
-        public static final int editText1=0x7f090002;
-        public static final int editText2=0x7f090003;
-        public static final int manu_clear=0x7f09000a;
-        public static final int root=0x7f090000;
-        public static final int root2=0x7f090001;
-        public static final int textView1=0x7f090008;
+        public static final int FrameLayout1=0x7f090009;
+        public static final int action_search=0x7f09000e;
+        public static final int action_settings=0x7f09000c;
+        public static final int button3=0x7f090008;
+        public static final int button_bt_connect=0x7f090002;
+        public static final int button_bt_pair=0x7f090001;
+        public static final int button_dialog1=0x7f090007;
+        public static final int button_dialog2=0x7f09000b;
+        public static final int editText1=0x7f090005;
+        public static final int editText2=0x7f090006;
+        public static final int listview_bt=0x7f090000;
+        public static final int manu_clear=0x7f09000d;
+        public static final int root=0x7f090003;
+        public static final int root2=0x7f090004;
+        public static final int textView1=0x7f09000a;
     }
     public static final class layout {
-        public static final int activity_main=0x7f030000;
-        public static final int dialog_fragment=0x7f030001;
+        public static final int activity_bluetooth=0x7f030000;
+        public static final int activity_main=0x7f030001;
+        public static final int device_textview=0x7f030002;
+        public static final int dialog_fragment=0x7f030003;
     }
     public static final class menu {
-        public static final int main=0x7f080000;
-        public static final int manu_activity_actions=0x7f080001;
+        public static final int bluetooth=0x7f080000;
+        public static final int main=0x7f080001;
+        public static final int manu_activity_actions=0x7f080002;
     }
     public static final class string {
         public static final int action_search=0x7f050005;
+        public static final int action_settings=0x7f05000b;
         public static final int app_name=0x7f050002;
         public static final int button_bt_cancel=0x7f050006;
+        public static final int button_bt_connect=0x7f05000c;
         public static final int button_bt_enable=0x7f050007;
         public static final int button_bt_ok=0x7f050008;
+        public static final int button_bt_pair=0x7f05000d;
         public static final int button_green=0x7f050001;
         public static final int button_red=0x7f050000;
+        public static final int hello_world=0x7f05000a;
         public static final int inspect_count=0x7f050003;
         public static final int manu_clear_title=0x7f050004;
+        public static final int title_activity_bluetooth=0x7f050009;
     }
     public static final class style {
         /** 
