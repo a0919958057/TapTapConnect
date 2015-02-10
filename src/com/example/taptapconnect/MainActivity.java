@@ -3,6 +3,8 @@ package com.example.taptapconnect;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.example.taptapconnect.btDialogFragment.callbackDialog;
+import com.example.taptapconnect.bluetoothservice.BluetoothService;
 import com.example.taptapconnect.dotview.DotView;
 import com.example.taptapconnect.dotview.DotView.CanvasTransformation;
 import com.example.taptapconnect.gameobject.GameEvent;
@@ -10,7 +12,12 @@ import com.example.taptapconnect.gameobject.GameObject;
 import com.example.taptapconnect.gameobject.GameObjectHandler;
 
 import android.annotation.SuppressLint;
+import android.app.ActionBar;
 import android.app.Activity;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
+import android.bluetooth.*;
+import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -29,18 +36,28 @@ import android.widget.FrameLayout;
 @SuppressLint("ClickableViewAccessibility")
 public class MainActivity extends Activity {
 
+	protected static final int BT_REQUEST_ENABLE = 0;
 	GameObjectHandler gamehandler1, gamehandler2, gamehandler3;
 	List<GameObjectHandler> array = new ArrayList<GameObjectHandler>();
 	DotView dotview;
+	private BluetoothAdapter mBluetoothAdapter;
+	private BluetoothService mBTService;
+	DotGenerator dotg;
+	private String mDeviceAddress;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
+		// ActionBar actbar = getActionBar();
+		// actbar.setDisplayHomeAsUpEnabled(true);
+
 		setContentView(R.layout.activity_main);
 		dotview = new DotView(this);
 		dotview.setBackgroundColor(Color.BLACK);
 		((FrameLayout) findViewById(R.id.root2)).addView(dotview, 0);
+
+		setupBluetooth();
 
 		gamehandler1 = new GameObjectHandler();
 		gamehandler2 = new GameObjectHandler();
@@ -50,17 +67,18 @@ public class MainActivity extends Activity {
 		array.add(gamehandler2);
 		array.add(gamehandler3);
 
-		Thread thread = new Thread(new DotGenerator(gamehandler3, dotview,
-				Color.YELLOW));
+		dotg = new DotGenerator(gamehandler3, dotview, Color.YELLOW);
+
+		Thread thread = new Thread(dotg);
 		thread.start();
 
 		for (GameObjectHandler object : array) {
 			object.setListener(new ObjectsLinstener(object));
 		}
 
-		((Button) findViewById(R.id.button1))
+		((Button) findViewById(R.id.button_dialog1))
 				.setOnClickListener(new ButtonListener());
-		((Button) findViewById(R.id.button2))
+		((Button) findViewById(R.id.button_bt_paired))
 				.setOnClickListener(new ButtonListener());
 		((Button) findViewById(R.id.button3))
 				.setOnClickListener(new ButtonListener());
@@ -79,17 +97,21 @@ public class MainActivity extends Activity {
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.main, menu);
-		return true;
+		getMenuInflater().inflate(R.menu.manu_activity_actions, menu);
+		return super.onCreateOptionsMenu(menu);
 	}
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
-		case R.id.manu_clear:
-			for (GameObjectHandler objects : array) {
-				objects.clear();
-			}
+		case R.id.action_bt_activity:
+			startActivityForResult(new Intent(this, BluetoothActivity.class),
+					BluetoothActivity.RETURN_MAC_ADDRESS);
+			// TODO 這邊記得要做Intent優化
+
+			// for (GameObjectHandler objects : array) {
+			// objects.clear();
+			// }
 		}
 		return super.onOptionsItemSelected(item);
 	}
@@ -101,7 +123,7 @@ public class MainActivity extends Activity {
 		@Override
 		public void onClick(View v) {
 			switch (v.getId()) {
-			case R.id.button1:
+			case R.id.button_dialog1:
 
 				makeDot(gamehandler1, dotview, Color.RED);
 				textview1.setText(String.valueOf(gamehandler1.peekGameObject()
@@ -110,7 +132,7 @@ public class MainActivity extends Activity {
 						.getY()));
 				Log.i(this.getClass().getName(), "Button1 prass");
 				break;
-			case R.id.button2:
+			case R.id.button_bt_paired:
 
 				makeDot(gamehandler2, dotview, Color.GREEN);
 				textview1.setText(String.valueOf(gamehandler2.peekGameObject()
@@ -122,6 +144,10 @@ public class MainActivity extends Activity {
 			case R.id.button3:
 				textview1.setText(String.valueOf(gamehandler1.getCount()));
 				textview2.setText(String.valueOf(gamehandler2.getCount()));
+
+				// TODO 記得刪除
+				dotg.stop();
+
 				Log.i(this.getClass().getName(), "Button3 prass");
 				break;
 			default:
@@ -133,53 +159,51 @@ public class MainActivity extends Activity {
 	}
 
 	class ObjectsLinstener implements GameObjectHandler.GameObjectListener {
-		
+
 		public GameObjectHandler linstenOnwer;
-		
+
 		public void setOnwer(GameObjectHandler onwer) {
 			this.linstenOnwer = onwer;
 		}
-		
+
 		public ObjectsLinstener() {
 			this(null);
-		} 
-		
+		}
+
 		public ObjectsLinstener(GameObjectHandler onwer) {
 			setOnwer(onwer);
-		} 
-		
+		}
+
 		@Override
 		public void onChange(GameEvent event) {
 			dotview.setTransformation(new CanvasTransformation() {
-				
+
 				@Override
 				public void tranform(Canvas canvas) {
 					canvas.translate(getModifyX(), getModifyY());
-					canvas.rotate((float)(linstenOnwer.getCount()*-12));
+					canvas.rotate((float) (linstenOnwer.getCount() * -12));
 
-					
 				}
+
 				@Override
 				public String getString() {
 					return null;
 				}
-				
-				private float getModifyX(){
-					double x = dotview.getWidth()/2;
-					double y = dotview.getHeight()/2;
-					return (float)(x+Math.sqrt(x*x+y*y)*(
-							Math.cos(Math.PI-Math.atan(y/x)+
-									(linstenOnwer.getCount()*Math.PI/15)))
-									);
+
+				private float getModifyX() {
+					double x = dotview.getWidth() / 2;
+					double y = dotview.getHeight() / 2;
+					return (float) (x + Math.sqrt(x * x + y * y)
+							* (Math.cos(Math.PI - Math.atan(y / x)
+									+ (linstenOnwer.getCount() * Math.PI / 15))));
 				}
-				
-				private float getModifyY(){
-					double x = dotview.getWidth()/2;
-					double y = dotview.getHeight()/2;
-					return (float)(y-Math.sqrt(x*x+y*y)*(
-							Math.sin(Math.PI-Math.atan(y/x)+
-									(linstenOnwer.getCount()*Math.PI/15)))
-									);
+
+				private float getModifyY() {
+					double x = dotview.getWidth() / 2;
+					double y = dotview.getHeight() / 2;
+					return (float) (y - Math.sqrt(x * x + y * y)
+							* (Math.sin(Math.PI - Math.atan(y / x)
+									+ (linstenOnwer.getCount() * Math.PI / 15))));
 				}
 			});
 			dotview.invalidate();
@@ -221,7 +245,7 @@ public class MainActivity extends Activity {
 	private class DotGenerator implements Runnable {
 
 		final String TAG = this.getClass().getName();
-		volatile boolean isStop;
+		volatile boolean isStop = true;
 		private GameObjectHandler gameobjects;
 		private DotView view;
 		private int color;
@@ -246,6 +270,13 @@ public class MainActivity extends Activity {
 		 * 停止DotGeneration的運作
 		 */
 		public void stop() {
+			this.isStop = true;
+		}
+
+		/**
+		 * 開始DotGeneration的運作
+		 */
+		public void start() {
 			this.isStop = false;
 		}
 
@@ -269,4 +300,97 @@ public class MainActivity extends Activity {
 		}
 
 	}
+
+	void setupBluetooth() {
+		mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+		if (mBluetoothAdapter == null) {
+			btDialogFragment.newInstance(this,
+					btDialogFragment.DEVICES_NOT_ENABLE, 6).show();
+
+			Log.e(this.getClass().getSimpleName(), "Blueteeth Not Support");
+			return;
+		} else if (!mBluetoothAdapter.isEnabled()) {
+			btDialogFragment dialog;
+			(dialog = btDialogFragment.newInstance(this,
+					btDialogFragment.DEVICES_NOT_ENABLE, 6)).show();
+			dialog.setCallback(new callbackDialog() {
+
+				@Override
+				public void callback() {
+					Intent enableBtIntent = new Intent(
+							BluetoothAdapter.ACTION_REQUEST_ENABLE);
+					startActivityForResult(enableBtIntent, BT_REQUEST_ENABLE);
+				}
+
+			});
+
+		}
+		Intent discoverableIntent = new Intent(
+				BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
+		discoverableIntent.putExtra(
+				BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 300);
+		startActivity(discoverableIntent);
+
+		startActivity(new Intent(this, BluetoothActivity.class));
+
+		// TODO 記得這邊有需要完善的Intent，建議新建method來進行
+	}
+
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		switch (requestCode) {
+		case BT_REQUEST_ENABLE:
+			if (resultCode == RESULT_OK) {
+				// TODO:開始進行配對與搜尋
+
+			} else if (resultCode == RESULT_CANCELED) {
+				finish();
+			}
+			break;
+		case BluetoothActivity.RETURN_MAC_ADDRESS :
+			mDeviceAddress = data.getStringExtra(BluetoothActivity.EXTRA_DEVICE_ADDRESS);
+			Log.i("GET MAC ADDRESS SUCCEFUL",mDeviceAddress);
+		}
+	}
+	
+	
+    /**
+     * Establish connection with other divice
+     *
+     * @param data   An {@link Intent} with {@link DeviceListActivity#EXTRA_DEVICE_ADDRESS} extra.
+     * @param secure Socket Security type - Secure (true) , Insecure (false)
+     */
+    private void connectDevice(Intent data, boolean secure) {
+        // Get the device MAC address
+        String address = data.getExtras()
+                .getString(BluetoothActivity.EXTRA_DEVICE_ADDRESS);
+        // Get the BluetoothDevice object
+        BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(address);
+        // Attempt to connect to the device
+        mBTService.connect(device, secure);
+    }
+
+	/**
+	 * Updates the status on the action bar.
+	 *
+	 * @param resId
+	 *            a string resource ID
+	 */
+	private void setStatus(int status, String str) {
+
+		final ActionBar actionBar = getActionBar();
+		if (null == actionBar) {
+			return;
+		}
+		if (status == 0) {
+			actionBar.setSubtitle(R.string.bt_unpaired);
+		}
+		if (status == 1) {
+			actionBar.setSubtitle(getResources().getString(R.string.bt_paired)
+					+ " : " + BluetoothService.getPairedID());
+		}
+
+		actionBar.setSubtitle(str);
+	}
+
 }

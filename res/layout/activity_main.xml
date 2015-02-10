@@ -6,7 +6,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.example.taptapconnect.MainActivity" >
+    tools:context=".MainActivity" >
 
     <LinearLayout
         android:id="@+id/root"
@@ -49,14 +49,14 @@
             android:layout_height="wrap_content" >
 
             <Button
-                android:id="@+id/button1"
+                android:id="@+id/button_dialog1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="@string/button_red" />
 
             <Button
-                android:id="@+id/button2"
+                android:id="@+id/button_bt_paired"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
