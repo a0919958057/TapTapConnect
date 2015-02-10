@@ -5,5 +5,9 @@
     <string name="app_name">點點遊戲</string>
     <string name="inspect_count">顯示數量</string>
     <string name="manu_clear_title">清除全部</string>
-    <string name="action_search">搜尋</string>
+    <string-array name="dialog_status">
+        <item >找不到藍芽裝置!</item>
+        <item >無法使用藍芽裝置!</item>
+    </string-array><string name="action_search">搜尋</string>
+    
 </resources>

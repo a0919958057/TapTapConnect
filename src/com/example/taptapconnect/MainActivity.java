@@ -10,7 +10,11 @@ import com.example.taptapconnect.gameobject.GameObject;
 import com.example.taptapconnect.gameobject.GameObjectHandler;
 
 import android.annotation.SuppressLint;
+import android.app.ActionBar;
 import android.app.Activity;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
+import android.bluetooth.BluetoothAdapter;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -32,10 +36,15 @@ public class MainActivity extends Activity {
 	GameObjectHandler gamehandler1, gamehandler2, gamehandler3;
 	List<GameObjectHandler> array = new ArrayList<GameObjectHandler>();
 	DotView dotview;
+	private BluetoothAdapter mBluetoothAdapter;
+	DotGenerator dotg;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+
+		ActionBar actbar = getActionBar();
+		actbar.setDisplayHomeAsUpEnabled(true);
 
 		setContentView(R.layout.activity_main);
 		dotview = new DotView(this);
@@ -50,8 +59,9 @@ public class MainActivity extends Activity {
 		array.add(gamehandler2);
 		array.add(gamehandler3);
 
-		Thread thread = new Thread(new DotGenerator(gamehandler3, dotview,
-				Color.YELLOW));
+		dotg = new DotGenerator(gamehandler3, dotview, Color.YELLOW);
+
+		Thread thread = new Thread(dotg);
 		thread.start();
 
 		for (GameObjectHandler object : array) {
@@ -122,6 +132,11 @@ public class MainActivity extends Activity {
 			case R.id.button3:
 				textview1.setText(String.valueOf(gamehandler1.getCount()));
 				textview2.setText(String.valueOf(gamehandler2.getCount()));
+
+				// TODO 記得刪除
+				dotg.stop();
+				setupBlueteeth();
+
 				Log.i(this.getClass().getName(), "Button3 prass");
 				break;
 			default:
@@ -133,53 +148,51 @@ public class MainActivity extends Activity {
 	}
 
 	class ObjectsLinstener implements GameObjectHandler.GameObjectListener {
-		
+
 		public GameObjectHandler linstenOnwer;
-		
+
 		public void setOnwer(GameObjectHandler onwer) {
 			this.linstenOnwer = onwer;
 		}
-		
+
 		public ObjectsLinstener() {
 			this(null);
-		} 
-		
+		}
+
 		public ObjectsLinstener(GameObjectHandler onwer) {
 			setOnwer(onwer);
-		} 
-		
+		}
+
 		@Override
 		public void onChange(GameEvent event) {
 			dotview.setTransformation(new CanvasTransformation() {
-				
+
 				@Override
 				public void tranform(Canvas canvas) {
 					canvas.translate(getModifyX(), getModifyY());
-					canvas.rotate((float)(linstenOnwer.getCount()*-12));
+					canvas.rotate((float) (linstenOnwer.getCount() * -12));
 
-					
 				}
+
 				@Override
 				public String getString() {
 					return null;
 				}
-				
-				private float getModifyX(){
-					double x = dotview.getWidth()/2;
-					double y = dotview.getHeight()/2;
-					return (float)(x+Math.sqrt(x*x+y*y)*(
-							Math.cos(Math.PI-Math.atan(y/x)+
-									(linstenOnwer.getCount()*Math.PI/15)))
-									);
+
+				private float getModifyX() {
+					double x = dotview.getWidth() / 2;
+					double y = dotview.getHeight() / 2;
+					return (float) (x + Math.sqrt(x * x + y * y)
+							* (Math.cos(Math.PI - Math.atan(y / x)
+									+ (linstenOnwer.getCount() * Math.PI / 15))));
 				}
-				
-				private float getModifyY(){
-					double x = dotview.getWidth()/2;
-					double y = dotview.getHeight()/2;
-					return (float)(y-Math.sqrt(x*x+y*y)*(
-							Math.sin(Math.PI-Math.atan(y/x)+
-									(linstenOnwer.getCount()*Math.PI/15)))
-									);
+
+				private float getModifyY() {
+					double x = dotview.getWidth() / 2;
+					double y = dotview.getHeight() / 2;
+					return (float) (y - Math.sqrt(x * x + y * y)
+							* (Math.sin(Math.PI - Math.atan(y / x)
+									+ (linstenOnwer.getCount() * Math.PI / 15))));
 				}
 			});
 			dotview.invalidate();
@@ -246,7 +259,7 @@ public class MainActivity extends Activity {
 		 * 停止DotGeneration的運作
 		 */
 		public void stop() {
-			this.isStop = false;
+			this.isStop = true;
 		}
 
 		/**
@@ -267,6 +280,17 @@ public class MainActivity extends Activity {
 			}
 
 		}
+
+	}
+
+	void setupBlueteeth() {
+		mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+		// if (mBluetoothAdapter == null) {
+		btDialogFragment.newInstance(this,
+				btDialogFragment.DEVICES_NOT_FOUND, 6).show();
+
+		Log.i(this.getClass().getSimpleName(), "create Succesful");
+		// }
 
 	}
 }
