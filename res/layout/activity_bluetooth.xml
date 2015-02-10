@@ -5,36 +5,47 @@
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.example.taptapconnect.BluetoothActivity" >
+
+    <TextView
+        android:id="@+id/textview_status"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:background="@color/blue"
+        android:text="@string/textview_paired" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_below="@+id/textview_status"
+        android:gravity="top"
         android:orientation="vertical" >
 
         <ListView
             android:id="@+id/listview_bt"
+            style="@style/AppTheme"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="4" >
+            android:layout_weight="1" >
 
         </ListView>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1" >
+            android:gravity="bottom" >
 
             <Button
-                android:id="@+id/button_bt_pair"
+                android:id="@+id/button_bt_unpair"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="@string/button_bt_pair" />
 
             <Button
-                android:id="@+id/button_bt_connect"
+                android:id="@+id/button_bt_paired"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"

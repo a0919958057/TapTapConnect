@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.example.taptapconnect.btDialogFragment.callbackDialog;
+import com.example.taptapconnect.bluetoothservice.BluetoothService;
 import com.example.taptapconnect.dotview.DotView;
 import com.example.taptapconnect.dotview.DotView.CanvasTransformation;
 import com.example.taptapconnect.gameobject.GameEvent;
@@ -40,14 +41,16 @@ public class MainActivity extends Activity {
 	List<GameObjectHandler> array = new ArrayList<GameObjectHandler>();
 	DotView dotview;
 	private BluetoothAdapter mBluetoothAdapter;
+	private BluetoothService mBTService;
 	DotGenerator dotg;
+	private String mDeviceAddress;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		ActionBar actbar = getActionBar();
-		actbar.setDisplayHomeAsUpEnabled(true);
+		// ActionBar actbar = getActionBar();
+		// actbar.setDisplayHomeAsUpEnabled(true);
 
 		setContentView(R.layout.activity_main);
 		dotview = new DotView(this);
@@ -75,7 +78,7 @@ public class MainActivity extends Activity {
 
 		((Button) findViewById(R.id.button_dialog1))
 				.setOnClickListener(new ButtonListener());
-		((Button) findViewById(R.id.button_bt_connect))
+		((Button) findViewById(R.id.button_bt_paired))
 				.setOnClickListener(new ButtonListener());
 		((Button) findViewById(R.id.button3))
 				.setOnClickListener(new ButtonListener());
@@ -101,10 +104,14 @@ public class MainActivity extends Activity {
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
-		case R.id.action_search:
-			for (GameObjectHandler objects : array) {
-				objects.clear();
-			}
+		case R.id.action_bt_activity:
+			startActivityForResult(new Intent(this, BluetoothActivity.class),
+					BluetoothActivity.RETURN_MAC_ADDRESS);
+			// TODO 這邊記得要做Intent優化
+
+			// for (GameObjectHandler objects : array) {
+			// objects.clear();
+			// }
 		}
 		return super.onOptionsItemSelected(item);
 	}
@@ -125,7 +132,7 @@ public class MainActivity extends Activity {
 						.getY()));
 				Log.i(this.getClass().getName(), "Button1 prass");
 				break;
-			case R.id.button_bt_connect:
+			case R.id.button_bt_paired:
 
 				makeDot(gamehandler2, dotview, Color.GREEN);
 				textview1.setText(String.valueOf(gamehandler2.peekGameObject()
@@ -238,7 +245,7 @@ public class MainActivity extends Activity {
 	private class DotGenerator implements Runnable {
 
 		final String TAG = this.getClass().getName();
-		volatile boolean isStop;
+		volatile boolean isStop = true;
 		private GameObjectHandler gameobjects;
 		private DotView view;
 		private int color;
@@ -264,6 +271,13 @@ public class MainActivity extends Activity {
 		 */
 		public void stop() {
 			this.isStop = true;
+		}
+
+		/**
+		 * 開始DotGeneration的運作
+		 */
+		public void start() {
+			this.isStop = false;
 		}
 
 		/**
@@ -311,7 +325,15 @@ public class MainActivity extends Activity {
 			});
 
 		}
+		Intent discoverableIntent = new Intent(
+				BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
+		discoverableIntent.putExtra(
+				BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 300);
+		startActivity(discoverableIntent);
+
 		startActivity(new Intent(this, BluetoothActivity.class));
+
+		// TODO 記得這邊有需要完善的Intent，建議新建method來進行
 	}
 
 	@Override
@@ -324,8 +346,51 @@ public class MainActivity extends Activity {
 			} else if (resultCode == RESULT_CANCELED) {
 				finish();
 			}
+			break;
+		case BluetoothActivity.RETURN_MAC_ADDRESS :
+			mDeviceAddress = data.getStringExtra(BluetoothActivity.EXTRA_DEVICE_ADDRESS);
+			Log.i("GET MAC ADDRESS SUCCEFUL",mDeviceAddress);
+		}
+	}
+	
+	
+    /**
+     * Establish connection with other divice
+     *
+     * @param data   An {@link Intent} with {@link DeviceListActivity#EXTRA_DEVICE_ADDRESS} extra.
+     * @param secure Socket Security type - Secure (true) , Insecure (false)
+     */
+    private void connectDevice(Intent data, boolean secure) {
+        // Get the device MAC address
+        String address = data.getExtras()
+                .getString(BluetoothActivity.EXTRA_DEVICE_ADDRESS);
+        // Get the BluetoothDevice object
+        BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(address);
+        // Attempt to connect to the device
+        mBTService.connect(device, secure);
+    }
+
+	/**
+	 * Updates the status on the action bar.
+	 *
+	 * @param resId
+	 *            a string resource ID
+	 */
+	private void setStatus(int status, String str) {
+
+		final ActionBar actionBar = getActionBar();
+		if (null == actionBar) {
+			return;
+		}
+		if (status == 0) {
+			actionBar.setSubtitle(R.string.bt_unpaired);
+		}
+		if (status == 1) {
+			actionBar.setSubtitle(getResources().getString(R.string.bt_paired)
+					+ " : " + BluetoothService.getPairedID());
 		}
 
+		actionBar.setSubtitle(str);
 	}
 
 }
