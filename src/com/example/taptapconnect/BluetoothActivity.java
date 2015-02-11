@@ -92,6 +92,7 @@ public class BluetoothActivity extends Activity {
 			break;
 		case R.id.action_bt_search:
 			doDiscovery();
+			ensureDiscoverable();
 			break;
 			//TODO : 增加搜尋功能
 			
@@ -190,6 +191,17 @@ public class BluetoothActivity extends Activity {
 
     };
 
+    /**
+     * Makes this device discoverable.
+     */
+    private void ensureDiscoverable() {
+    	if (mBtAdapter.getScanMode() !=
+    			BluetoothAdapter.SCAN_MODE_CONNECTABLE_DISCOVERABLE) {
+    		Intent discoverableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
+    		discoverableIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 300);
+    		startActivity(discoverableIntent);
+    	}
+    }
 	
 	public class ButtonListener implements Button.OnClickListener {
 

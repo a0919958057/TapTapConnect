@@ -96,6 +96,9 @@ public final class R {
         public static final int textview_paired=0x7f07000f;
         public static final int textview_unpair=0x7f070014;
         public static final int title_activity_bluetooth=0x7f070009;
+        public static final int title_connected_to=0x7f070017;
+        public static final int title_connecting=0x7f070018;
+        public static final int title_not_connected=0x7f070019;
     }
     public static final class style {
         /** 

@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.example.taptapconnect.btDialogFragment.callbackDialog;
 import com.example.taptapconnect.bluetoothservice.BluetoothService;
+import com.example.taptapconnect.bluetoothservice.BluetoothService.Constants;
 import com.example.taptapconnect.dotview.DotView;
 import com.example.taptapconnect.dotview.DotView.CanvasTransformation;
 import com.example.taptapconnect.gameobject.GameEvent;
@@ -22,6 +23,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -32,18 +34,37 @@ import android.view.View.OnTouchListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.Toast;
 
 @SuppressLint("ClickableViewAccessibility")
 public class MainActivity extends Activity {
 
 	protected static final int BT_REQUEST_ENABLE = 0;
-	GameObjectHandler gamehandler1, gamehandler2, gamehandler3;
-	List<GameObjectHandler> array = new ArrayList<GameObjectHandler>();
-	DotView dotview;
+
+	// 用於Handler.callback 之資料查詢key
+	public static final String BLUETEETH_REMOTE_PRASS = "remote_prass";
+	public static final String BLUETEETH_REMOTE_UNPRASS = "remote_unprass";
+	public static final String BLUETEETH_REMOTE_TOUCH = "remote_touch";
+
+	public Activity mainActivity = this;
+
+	private GameObjectHandler gamehandler1, gamehandler2, gamehandler3;
+	private List<GameObjectHandler> array = new ArrayList<GameObjectHandler>();
+	private DotView dotview;
 	private BluetoothAdapter mBluetoothAdapter;
 	private BluetoothService mBTService;
-	DotGenerator dotg;
+	private DotGenerator dotg;
 	private String mDeviceAddress;
+
+	Button buttonRed;
+	Button buttonGreen;
+	Button buttonCount;
+
+	volatile private boolean isRemoteOnPrassOff;
+	volatile private boolean isRemoteOnPrass;
+	volatile private boolean isRemoteOnTouch;
+
+	public String mConnectedDeviceName;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -76,11 +97,11 @@ public class MainActivity extends Activity {
 			object.setListener(new ObjectsLinstener(object));
 		}
 
-		((Button) findViewById(R.id.button_dialog1))
+		(buttonRed = (Button) findViewById(R.id.button_dialog1))
 				.setOnClickListener(new ButtonListener());
-		((Button) findViewById(R.id.button_bt_paired))
+		(buttonGreen = (Button) findViewById(R.id.button_bt_paired))
 				.setOnClickListener(new ButtonListener());
-		((Button) findViewById(R.id.button3))
+		(buttonCount = (Button) findViewById(R.id.button3))
 				.setOnClickListener(new ButtonListener());
 		dotview.setOnTouchListener(new OnTouchListener() {
 
@@ -130,6 +151,9 @@ public class MainActivity extends Activity {
 						.getX()));
 				textview2.setText(String.valueOf(gamehandler1.peekGameObject()
 						.getY()));
+				// TODO 增加藍芽連接之控制項 此處為暫時
+				sendMessage(BLUETEETH_REMOTE_TOUCH);
+
 				Log.i(this.getClass().getName(), "Button1 prass");
 				break;
 			case R.id.button_bt_paired:
@@ -325,12 +349,7 @@ public class MainActivity extends Activity {
 			});
 
 		}
-		Intent discoverableIntent = new Intent(
-				BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
-		discoverableIntent.putExtra(
-				BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 300);
-		startActivity(discoverableIntent);
-
+		mBTService = new BluetoothService(new Handler(new UIMessageHander()));
 		startActivity(new Intent(this, BluetoothActivity.class));
 
 		// TODO 記得這邊有需要完善的Intent，建議新建method來進行
@@ -347,28 +366,30 @@ public class MainActivity extends Activity {
 				finish();
 			}
 			break;
-		case BluetoothActivity.RETURN_MAC_ADDRESS :
-			mDeviceAddress = data.getStringExtra(BluetoothActivity.EXTRA_DEVICE_ADDRESS);
-			Log.i("GET MAC ADDRESS SUCCEFUL",mDeviceAddress);
+		case BluetoothActivity.RETURN_MAC_ADDRESS:
+			connectDevice(data);
+			Log.i(getClass().getSimpleName(), "GET MAC ADDRESS SUCCEFUL");
 		}
 	}
-	
-	
-    /**
-     * Establish connection with other divice
-     *
-     * @param data   An {@link Intent} with {@link DeviceListActivity#EXTRA_DEVICE_ADDRESS} extra.
-     * @param secure Socket Security type - Secure (true) , Insecure (false)
-     */
-    private void connectDevice(Intent data, boolean secure) {
-        // Get the device MAC address
-        String address = data.getExtras()
-                .getString(BluetoothActivity.EXTRA_DEVICE_ADDRESS);
-        // Get the BluetoothDevice object
-        BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(address);
-        // Attempt to connect to the device
-        mBTService.connect(device, secure);
-    }
+
+	/**
+	 * Establish connection with other divice
+	 *
+	 * @param data
+	 *            An {@link Intent} with
+	 *            {@link DeviceListActivity#EXTRA_DEVICE_ADDRESS} extra.
+	 * @param secure
+	 *            Socket Security type - Secure (true) , Insecure (false)
+	 */
+	private void connectDevice(Intent data) {
+		// Get the device MAC address
+		String address = data.getExtras().getString(
+				BluetoothActivity.EXTRA_DEVICE_ADDRESS);
+		// Get the BluetoothDevice object
+		BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(address);
+		// Attempt to connect to the device
+		mBTService.connect(device);
+	}
 
 	/**
 	 * Updates the status on the action bar.
@@ -376,21 +397,119 @@ public class MainActivity extends Activity {
 	 * @param resId
 	 *            a string resource ID
 	 */
-	private void setStatus(int status, String str) {
+	private void setStatus(int status) {
 
 		final ActionBar actionBar = getActionBar();
 		if (null == actionBar) {
 			return;
 		}
-		if (status == 0) {
-			actionBar.setSubtitle(R.string.bt_unpaired);
-		}
-		if (status == 1) {
-			actionBar.setSubtitle(getResources().getString(R.string.bt_paired)
-					+ " : " + BluetoothService.getPairedID());
+		actionBar.setSubtitle(status);
+
+		// if (status == 0) {
+		// actionBar.setSubtitle(R.string.bt_unpaired);
+		// }
+		// if (status == 1) {
+		// actionBar.setSubtitle(getResources().getString(R.string.bt_paired)
+		// + " : " + BluetoothService.getPairedID());
+		// }
+
+	}
+
+	private void setStatus(String strStatus) {
+		final ActionBar actionBar = getActionBar();
+		actionBar.setSubtitle(strStatus);
+	}
+
+	class UIMessageHander implements Handler.Callback {
+
+		@Override
+		public boolean handleMessage(Message msg) {
+
+			Bundle data;
+			data = msg.getData();
+
+			isRemoteOnPrass = data.getBoolean(BLUETEETH_REMOTE_PRASS);
+			isRemoteOnPrassOff = data.getBoolean(BLUETEETH_REMOTE_UNPRASS);
+			isRemoteOnTouch = data.getBoolean(BLUETEETH_REMOTE_TOUCH);
+
+			Activity activity = mainActivity;
+			switch (msg.what) {
+			case Constants.MESSAGE_STATE_CHANGE:
+				switch (msg.arg1) {
+				case BluetoothService.STATE_CONNECTED:
+					setStatus(getString(R.string.title_connected_to)
+							+ mConnectedDeviceName);
+					break;
+				case BluetoothService.STATE_CONNECTING:
+					setStatus(R.string.title_connecting);
+					break;
+				case BluetoothService.STATE_LISTEN:
+				case BluetoothService.STATE_NONE:
+					setStatus(R.string.title_not_connected);
+					break;
+				}
+				break;
+			case Constants.MESSAGE_WRITE:
+				byte[] writeBuf = (byte[]) msg.obj;
+				// construct a string from the buffer
+				String writeMessage = new String(writeBuf);
+				Log.i("WRITE MESSAGE","successful!");
+
+				break;
+			case Constants.MESSAGE_READ:
+				byte[] readBuf = (byte[]) msg.obj;
+				// construct a string from the valid bytes in the buffer
+				String readMessage = new String(readBuf, 0, msg.arg1);
+				if (readMessage.equals(BLUETEETH_REMOTE_TOUCH)) {
+					buttonGreen.performClick();
+				}
+				Log.i("READ MESSAGE","successful!");
+				Log.i("READ MESSAGE",readMessage);
+				break;
+			case Constants.MESSAGE_DEVICE_NAME:
+				// save the connected device's name
+				mConnectedDeviceName = msg.getData().getString(
+						Constants.DEVICE_NAME);
+				if (null != activity) {
+					Toast.makeText(activity,
+							"Connected to " + mConnectedDeviceName,
+							Toast.LENGTH_SHORT).show();
+				}
+				break;
+			case Constants.MESSAGE_TOAST:
+				if (null != activity) {
+					Toast.makeText(activity,
+							msg.getData().getString(Constants.TOAST),
+							Toast.LENGTH_SHORT).show();
+				}
+				break;
+			}
+
+			return false;
 		}
 
-		actionBar.setSubtitle(str);
+	}
+
+	/**
+	 * 向遠端裝置發出訊息
+	 * 
+	 * @param message
+	 */
+	private void sendMessage(String message) {
+		// Check that we're actually connected before trying anything
+		if (mBTService.getState() != mBTService.STATE_CONNECTED) {
+			Toast.makeText(mainActivity, R.string.title_not_connected,
+					Toast.LENGTH_SHORT).show();
+			return;
+		}
+
+		// Check that there's actually something to send
+		if (message.length() > 0) {
+			// Get the message bytes and tell the BluetoothChatService to write
+			byte[] send = message.getBytes();
+			mBTService.write(send);
+
+		}
 	}
 
 }

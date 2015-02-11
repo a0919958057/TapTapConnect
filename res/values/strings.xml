@@ -30,5 +30,8 @@
     <string name="textview_unpair">未配對裝置清單</string>
     <string name="bt_paired">已配對藍芽裝置</string>
     <string name="bt_unpaired">未配對藍芽裝置</string>
+    <string name="title_connected_to">已連接到</string>
+    <string name="title_connecting">嘗試連接至</string>
+    <string name="title_not_connected">尚未連接至</string>
 
 </resources>
