@@ -17,6 +17,7 @@ import android.app.ActionBar;
 import android.app.Activity;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.app.Service;
 import android.bluetooth.*;
 import android.content.Intent;
 import android.graphics.Canvas;
@@ -24,6 +25,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.os.Vibrator;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -54,11 +56,10 @@ public class MainActivity extends Activity {
 	private BluetoothAdapter mBluetoothAdapter;
 	private BluetoothService mBTService;
 	private DotGenerator dotg;
-	private String mDeviceAddress;
-
-	Button buttonRed;
-	Button buttonGreen;
-	Button buttonCount;
+	private Button buttonRed;
+	private Button buttonGreen;
+	private Button buttonCount;
+	private Vibrator mVibrator;
 
 	volatile private boolean isRemoteOnPrassOff;
 	volatile private boolean isRemoteOnPrass;
@@ -79,6 +80,8 @@ public class MainActivity extends Activity {
 		((FrameLayout) findViewById(R.id.root2)).addView(dotview, 0);
 
 		setupBluetooth();
+		mVibrator = (Vibrator) getApplication().getSystemService(
+				Service.VIBRATOR_SERVICE);
 
 		gamehandler1 = new GameObjectHandler();
 		gamehandler2 = new GameObjectHandler();
@@ -153,6 +156,8 @@ public class MainActivity extends Activity {
 						.getY()));
 				// TODO 增加藍芽連接之控制項 此處為暫時
 				sendMessage(BLUETEETH_REMOTE_TOUCH);
+				// TODO 此為測試記得刪除
+				mVibrator.vibrate(50);
 
 				Log.i(this.getClass().getName(), "Button1 prass");
 				break;
@@ -163,6 +168,8 @@ public class MainActivity extends Activity {
 						.getX()));
 				textview2.setText(String.valueOf(gamehandler2.peekGameObject()
 						.getY()));
+				// TODO 此為測試記得刪除
+				mVibrator.vibrate(100);
 				Log.i(this.getClass().getName(), "Button2 prass");
 				break;
 			case R.id.button3:
@@ -453,7 +460,7 @@ public class MainActivity extends Activity {
 				byte[] writeBuf = (byte[]) msg.obj;
 				// construct a string from the buffer
 				String writeMessage = new String(writeBuf);
-				Log.i("WRITE MESSAGE","successful!");
+				Log.i("WRITE MESSAGE", "successful!");
 
 				break;
 			case Constants.MESSAGE_READ:
@@ -463,8 +470,8 @@ public class MainActivity extends Activity {
 				if (readMessage.equals(BLUETEETH_REMOTE_TOUCH)) {
 					buttonGreen.performClick();
 				}
-				Log.i("READ MESSAGE","successful!");
-				Log.i("READ MESSAGE",readMessage);
+				Log.i("READ MESSAGE", "successful!");
+				Log.i("READ MESSAGE", readMessage);
 				break;
 			case Constants.MESSAGE_DEVICE_NAME:
 				// save the connected device's name

@@ -87,6 +87,7 @@ public final class R {
         public static final int button_bt_pair=0x7f07000d;
         public static final int button_green=0x7f070001;
         public static final int button_red=0x7f070000;
+        public static final int dialog_info=0x7f07001a;
         public static final int hello_world=0x7f07000a;
         public static final int inspect_count=0x7f070003;
         public static final int manu_clear_title=0x7f070004;
