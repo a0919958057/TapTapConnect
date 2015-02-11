@@ -3,7 +3,7 @@
 
     <string name="button_red">紅色</string>
     <string name="button_green">綠色</string>
-    <string name="app_name">點點遊戲</string>
+    <string name="app_name">點擊同步振動器</string>
     <string name="inspect_count">顯示數量</string>
     <string name="manu_clear_title">清除全部</string>
 
@@ -30,5 +30,9 @@
     <string name="textview_unpair">未配對裝置清單</string>
     <string name="bt_paired">已配對藍芽裝置</string>
     <string name="bt_unpaired">未配對藍芽裝置</string>
+    <string name="title_connected_to">已連接到</string>
+    <string name="title_connecting">嘗試連接至</string>
+    <string name="title_not_connected">尚未連接至</string>
+    <string name="dialog_info">這套軟體將需要使用您的藍芽\n藉由藍芽無線裝置與其他手機\n裝置連接。</string>
 
 </resources>
