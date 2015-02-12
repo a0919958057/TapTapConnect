@@ -15,10 +15,13 @@ import com.example.taptapconnect.gameobject.GameObjectHandler;
 import android.annotation.SuppressLint;
 import android.app.ActionBar;
 import android.app.Activity;
+import android.app.Dialog;
+import android.app.DialogFragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.app.Service;
 import android.bluetooth.*;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -337,10 +340,11 @@ public class MainActivity extends Activity {
 		if (mBluetoothAdapter == null) {
 			btDialogFragment.newInstance(this,
 					btDialogFragment.DEVICES_NOT_ENABLE, 6).show();
-
+			Toast.makeText(this, "此裝置不支援藍芽", Toast.LENGTH_LONG).show();
 			Log.e(this.getClass().getSimpleName(), "Blueteeth Not Support");
 			return;
-		} else if (!mBluetoothAdapter.isEnabled()) {
+		}
+		if (!mBluetoothAdapter.isEnabled()) {
 			btDialogFragment dialog;
 			(dialog = btDialogFragment.newInstance(this,
 					btDialogFragment.DEVICES_NOT_ENABLE, 6)).show();
@@ -354,28 +358,30 @@ public class MainActivity extends Activity {
 				}
 
 			});
+		} else if (mBluetoothAdapter.isEnabled()) {
+			mBTService = new BluetoothService(
+					new Handler(new UIMessageHander()));
+			mBTService.start();
 
+			startBluetoothActivity();
 		}
-		mBTService = new BluetoothService(new Handler(new UIMessageHander()));
-		startActivity(new Intent(this, BluetoothActivity.class));
-
-		// TODO 記得這邊有需要完善的Intent，建議新建method來進行
 	}
 
+	@SuppressLint("ShowToast")
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		switch (requestCode) {
 		case BT_REQUEST_ENABLE:
-			if (resultCode == RESULT_OK) {
-				// TODO:開始進行配對與搜尋
-
-			} else if (resultCode == RESULT_CANCELED) {
-				finish();
+			switch(resultCode) {
+			case RESULT_CANCELED:
+				Toast.makeText(this, "為什麼要取消呢?大大", Toast.LENGTH_LONG).show();
+				Log.i(this.getClass().getSimpleName(),"RESULT_CANCELED ");
+			case RESULT_OK: 
+				setupBluetooth();
 			}
 			break;
 		case BluetoothActivity.RETURN_MAC_ADDRESS:
 			connectDevice(data);
-			Log.i(getClass().getSimpleName(), "GET MAC ADDRESS SUCCEFUL");
 		}
 	}
 
@@ -388,12 +394,21 @@ public class MainActivity extends Activity {
 	 * @param secure
 	 *            Socket Security type - Secure (true) , Insecure (false)
 	 */
+	@SuppressLint("ShowToast")
 	private void connectDevice(Intent data) {
+
 		// Get the device MAC address
 		String address = data.getExtras().getString(
 				BluetoothActivity.EXTRA_DEVICE_ADDRESS);
+
+		// 顯示選取狀態氣泡
+		Toast.makeText(this, "您選取了"
+				+ mBluetoothAdapter.getRemoteDevice(address).getName(),
+				Toast.LENGTH_SHORT).show();
+
 		// Get the BluetoothDevice object
 		BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(address);
+
 		// Attempt to connect to the device
 		mBTService.connect(device);
 	}
@@ -517,6 +532,14 @@ public class MainActivity extends Activity {
 			mBTService.write(send);
 
 		}
+	}
+
+	/**
+	 * 開啟藍芽裝置選單
+	 */
+
+	private void startBluetoothActivity() {
+		startActivity(new Intent(this, BluetoothActivity.class));
 	}
 
 }

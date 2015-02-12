@@ -98,8 +98,15 @@ public class BluetoothService {
 	}
 
 	/**
-	 * Start the chat service. Specifically start AcceptThread to begin a
-	 * session in listening (server) mode. Called by the Activity onResume()
+	 * 開始BluetoothService運作
+	 * 
+	 * 1.取消所有嘗試連接的執行緒
+	 * 2.取消所有已連接的執行緒
+	 * 
+	 * 確保沒有其他執行續會存取到藍芽裝置後
+	 * 
+	 * 執行AcceptedThread來進行聆聽新裝置加入
+	 * 
 	 */
 	public synchronized void start() {
 		Log.d(TAG, "start");
