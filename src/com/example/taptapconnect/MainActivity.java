@@ -15,13 +15,8 @@ import com.example.taptapconnect.gameobject.GameObjectHandler;
 import android.annotation.SuppressLint;
 import android.app.ActionBar;
 import android.app.Activity;
-import android.app.Dialog;
-import android.app.DialogFragment;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.app.Service;
 import android.bluetooth.*;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -56,9 +51,9 @@ public class MainActivity extends Activity {
 	private GameObjectHandler gamehandler1, gamehandler2, gamehandler3;
 	private List<GameObjectHandler> array = new ArrayList<GameObjectHandler>();
 	private DotView dotview;
-	private BluetoothAdapter mBluetoothAdapter;
+	private BluetoothAdapter mAdapter;
 	private BluetoothService mBTService;
-	private DotGenerator dotg;
+	private DotGenerator dotGenerator;
 	private Button buttonRed;
 	private Button buttonGreen;
 	private Button buttonCount;
@@ -69,6 +64,7 @@ public class MainActivity extends Activity {
 	volatile private boolean isRemoteOnTouch;
 
 	public String mConnectedDeviceName;
+
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -94,20 +90,20 @@ public class MainActivity extends Activity {
 		array.add(gamehandler2);
 		array.add(gamehandler3);
 
-		dotg = new DotGenerator(gamehandler3, dotview, Color.YELLOW);
+		dotGenerator = new DotGenerator(gamehandler3, dotview, Color.YELLOW);
 
-		Thread thread = new Thread(dotg);
+		Thread thread = new Thread(dotGenerator);
 		thread.start();
 
 		for (GameObjectHandler object : array) {
 			object.setListener(new ObjectsLinstener(object));
 		}
 
-		(buttonRed = (Button) findViewById(R.id.button_dialog1))
+		(buttonRed = (Button) findViewById(R.id.button_red))
 				.setOnClickListener(new ButtonListener());
-		(buttonGreen = (Button) findViewById(R.id.button_bt_paired))
+		(buttonGreen = (Button) findViewById(R.id.button_green))
 				.setOnClickListener(new ButtonListener());
-		(buttonCount = (Button) findViewById(R.id.button3))
+		(buttonCount = (Button) findViewById(R.id.button_count))
 				.setOnClickListener(new ButtonListener());
 		dotview.setOnTouchListener(new OnTouchListener() {
 
@@ -150,9 +146,9 @@ public class MainActivity extends Activity {
 		@Override
 		public void onClick(View v) {
 			switch (v.getId()) {
-			case R.id.button_dialog1:
+			case R.id.button_red:
 
-				makeDot(gamehandler1, dotview, Color.RED);
+				dotGenerator.makeDot(gamehandler1, dotview, Color.RED);
 				textview1.setText(String.valueOf(gamehandler1.peekGameObject()
 						.getX()));
 				textview2.setText(String.valueOf(gamehandler1.peekGameObject()
@@ -164,9 +160,9 @@ public class MainActivity extends Activity {
 
 				Log.i(this.getClass().getName(), "Button1 prass");
 				break;
-			case R.id.button_bt_paired:
+			case R.id.button_green:
 
-				makeDot(gamehandler2, dotview, Color.GREEN);
+				dotGenerator.makeDot(gamehandler2, dotview, Color.GREEN);
 				textview1.setText(String.valueOf(gamehandler2.peekGameObject()
 						.getX()));
 				textview2.setText(String.valueOf(gamehandler2.peekGameObject()
@@ -175,12 +171,12 @@ public class MainActivity extends Activity {
 				mVibrator.vibrate(100);
 				Log.i(this.getClass().getName(), "Button2 prass");
 				break;
-			case R.id.button3:
+			case R.id.button_count:
 				textview1.setText(String.valueOf(gamehandler1.getCount()));
 				textview2.setText(String.valueOf(gamehandler2.getCount()));
 
 				// TODO 記得刪除
-				dotg.stop();
+				dotGenerator.stop();
 
 				Log.i(this.getClass().getName(), "Button3 prass");
 				break;
@@ -227,17 +223,38 @@ public class MainActivity extends Activity {
 				private float getModifyX() {
 					double x = dotview.getWidth() / 2;
 					double y = dotview.getHeight() / 2;
-					return (float) (x + Math.sqrt(x * x + y * y)
-							* (Math.cos(Math.PI - Math.atan(y / x)
-									+ (linstenOnwer.getCount() * Math.PI / 15))));
+					return (float) modifyY(x, y);
+				}
+
+				private double modifyY(double x, double y) {
+					return x + Math.sqrt(x * x + y * y)
+							* ratioHeightAfter(x, y);
+				}
+
+				private double ratioHeightAfter(double x, double y) {
+					return Math.cos(degreeAfter(x, y));
 				}
 
 				private float getModifyY() {
 					double x = dotview.getWidth() / 2;
 					double y = dotview.getHeight() / 2;
-					return (float) (y - Math.sqrt(x * x + y * y)
-							* (Math.sin(Math.PI - Math.atan(y / x)
-									+ (linstenOnwer.getCount() * Math.PI / 15))));
+					return (float) modifyX(x, y);
+				}
+
+				private double modifyX(double x, double y) {
+					return y - Math.sqrt(x * x + y * y) * ratioWidthAfter(x, y);
+				}
+
+				private double ratioWidthAfter(double x, double y) {
+					return Math.sin(degreeAfter(x, y));
+				}
+
+				private double degreeAfter(double x, double y) {
+					return Math.PI - Math.atan(y / x) + degreeChange();
+				}
+
+				private double degreeChange() {
+					return linstenOnwer.getCount() * Math.PI / 15;
 				}
 			});
 			dotview.invalidate();
@@ -260,20 +277,6 @@ public class MainActivity extends Activity {
 		public void onDelete(GameEvent event) {
 		}
 
-	}
-
-	public void makeDot(final GameObjectHandler dots, DotView view, int color) {
-
-		dots.add(new GameObject((float) ((view.getWidth() / 2) + (view
-				.getWidth() / 2)
-				* (100.0 / (100.0 + (double) dots.getCount()))
-				* Math.cos(dots.getCount() * Math.PI / 15)), (float) ((view
-				.getHeight() / 2) + (view.getHeight() / 2)
-				* (100.0 / (100.0 + (double) dots.getCount()))
-				* Math.sin(dots.getCount() * Math.PI / 15)), color,
-				(float) 10.0));
-
-		view.setDotsArray(array);
 	}
 
 	private class DotGenerator implements Runnable {
@@ -333,18 +336,52 @@ public class MainActivity extends Activity {
 
 		}
 
+		public void makeDot(final GameObjectHandler dots, DotView view, int color) {
+		
+			dots.add(new GameObject((float) getPositionX(dots, view),
+					(float) getPositionY(dots, view), color, (float) 10.0));
+		
+			view.setDotsArray(array);
+		}
+
+		private double getPositionY(final GameObjectHandler dots, DotView view) {
+			return getCenterY(view) + getCenterY(view) * getRatioY(dots);
+		}
+
+		private double getRatioY(final GameObjectHandler dots) {
+			return (100.0 / (100.0 + (double) dots.getCount()))
+					* Math.sin(dots.getCount() * Math.PI / 15);
+		}
+
+		private int getCenterY(DotView view) {
+			return view.getHeight() / 2;
+		}
+
+		private double getPositionX(final GameObjectHandler dots, DotView view) {
+			return getCenterX(view) + getCenterX(view) * getRatioX(dots);
+		}
+
+		private double getRatioX(final GameObjectHandler dots) {
+			return (100.0 / (100.0 + (double) dots.getCount()))
+					* Math.cos(dots.getCount() * Math.PI / 15);
+		}
+
+		private int getCenterX(DotView view) {
+			return view.getWidth() / 2;
+		}
+
 	}
 
 	void setupBluetooth() {
-		mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-		if (mBluetoothAdapter == null) {
+		mAdapter = BluetoothAdapter.getDefaultAdapter();
+		if (mAdapter == null) {
 			btDialogFragment.newInstance(this,
 					btDialogFragment.DEVICES_NOT_ENABLE, 6).show();
 			Toast.makeText(this, "此裝置不支援藍芽", Toast.LENGTH_LONG).show();
 			Log.e(this.getClass().getSimpleName(), "Blueteeth Not Support");
 			return;
 		}
-		if (!mBluetoothAdapter.isEnabled()) {
+		if (!mAdapter.isEnabled()) {
 			btDialogFragment dialog;
 			(dialog = btDialogFragment.newInstance(this,
 					btDialogFragment.DEVICES_NOT_ENABLE, 6)).show();
@@ -358,7 +395,7 @@ public class MainActivity extends Activity {
 				}
 
 			});
-		} else if (mBluetoothAdapter.isEnabled()) {
+		} else if (mAdapter.isEnabled()) {
 			mBTService = new BluetoothService(
 					new Handler(new UIMessageHander()));
 			mBTService.start();
@@ -372,11 +409,11 @@ public class MainActivity extends Activity {
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		switch (requestCode) {
 		case BT_REQUEST_ENABLE:
-			switch(resultCode) {
+			switch (resultCode) {
 			case RESULT_CANCELED:
 				Toast.makeText(this, "為什麼要取消呢?大大", Toast.LENGTH_LONG).show();
-				Log.i(this.getClass().getSimpleName(),"RESULT_CANCELED ");
-			case RESULT_OK: 
+				Log.i(this.getClass().getSimpleName(), "RESULT_CANCELED ");
+			case RESULT_OK:
 				setupBluetooth();
 			}
 			break;
@@ -402,12 +439,12 @@ public class MainActivity extends Activity {
 				BluetoothActivity.EXTRA_DEVICE_ADDRESS);
 
 		// 顯示選取狀態氣泡
-		Toast.makeText(this, "您選取了"
-				+ mBluetoothAdapter.getRemoteDevice(address).getName(),
+		Toast.makeText(this,
+				"您選取了" + mAdapter.getRemoteDevice(address).getName(),
 				Toast.LENGTH_SHORT).show();
 
 		// Get the BluetoothDevice object
-		BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(address);
+		BluetoothDevice device = mAdapter.getRemoteDevice(address);
 
 		// Attempt to connect to the device
 		mBTService.connect(device);

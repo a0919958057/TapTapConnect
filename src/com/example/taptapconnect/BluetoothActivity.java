@@ -47,7 +47,7 @@ public class BluetoothActivity extends Activity {
 		mNewDevicesArrayAdapter = new ArrayAdapter<String>(this, R.layout.device_textview);
 
 		unpairButton = (Button) findViewById(R.id.button_bt_unpair);
-		pairedButton = (Button) findViewById(R.id.button_bt_paired);
+		pairedButton = (Button) findViewById(R.id.button_green);
 		mainListview = (ListView) findViewById(R.id.listview_bt);
 		statusText = (TextView) findViewById(R.id.textview_status);
 		mainListview.setAdapter(mPairedDevicesArrayAdapter);
@@ -209,7 +209,7 @@ public class BluetoothActivity extends Activity {
 		public void onClick(View v) {
 
 			switch (v.getId()) {
-			case R.id.button_bt_paired:
+			case R.id.button_green:
 				onPairedButton();
 				break;
 

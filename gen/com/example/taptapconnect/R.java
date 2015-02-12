@@ -48,11 +48,11 @@ public final class R {
         public static final int action_bt_activity=0x7f0a000f;
         public static final int action_bt_search=0x7f0a000d;
         public static final int action_settings=0x7f0a000c;
-        public static final int button3=0x7f0a0009;
-        public static final int button_bt_paired=0x7f0a0003;
         public static final int button_bt_unpair=0x7f0a0002;
-        public static final int button_dialog1=0x7f0a0008;
+        public static final int button_count=0x7f0a0009;
         public static final int button_dialog2=0x7f0a000b;
+        public static final int button_green=0x7f0a0003;
+        public static final int button_red=0x7f0a0008;
         public static final int editText1=0x7f0a0006;
         public static final int editText2=0x7f0a0007;
         public static final int listview_bt=0x7f0a0001;

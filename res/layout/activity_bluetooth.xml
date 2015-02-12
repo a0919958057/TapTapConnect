@@ -45,7 +45,7 @@
                 android:text="@string/button_bt_pair" />
 
             <Button
-                android:id="@+id/button_bt_paired"
+                android:id="@+id/button_green"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"

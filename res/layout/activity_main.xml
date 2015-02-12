@@ -49,14 +49,14 @@
             android:layout_height="wrap_content" >
 
             <Button
-                android:id="@+id/button_dialog1"
+                android:id="@+id/button_red"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="@string/button_red" />
 
             <Button
-                android:id="@+id/button_bt_paired"
+                android:id="@+id/button_green"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -64,7 +64,7 @@
         </LinearLayout>
 
         <Button
-            android:id="@+id/button3"
+            android:id="@+id/button_count"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/inspect_count" />

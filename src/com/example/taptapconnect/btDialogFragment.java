@@ -122,7 +122,7 @@ public class btDialogFragment extends DialogFragment {
 		getDialog().setTitle(getStatusString(dialogStatus));
 		View v = inflater.inflate(R.layout.dialog_fragment, container);
 		Button b1,b2;
-		b1 = (Button)v.findViewById(R.id.button_dialog1);
+		b1 = (Button)v.findViewById(R.id.button_red);
 		b2 = (Button)v.findViewById(R.id.button_dialog2);
 		switch(dialogStatus){
 		case DEVICES_NOT_ENABLE :
@@ -135,7 +135,7 @@ public class btDialogFragment extends DialogFragment {
 			b2.setAlpha((float) 0.0);
 			b2.setClickable(false);
 			b1.setText(res.getString(R.string.button_bt_enable));
-			v.findViewById(R.id.button_dialog1).
+			v.findViewById(R.id.button_red).
 			setOnClickListener(new dialogListener());
 			break;
 		}
@@ -152,7 +152,7 @@ public class btDialogFragment extends DialogFragment {
 		@Override
 		public void onClick(View v) {
 			switch(v.getId()) {
-			case R.id.button_dialog1 :
+			case R.id.button_red :
 				parentActivity.finish();
 				break;
 			case R.id.button_dialog2 :
