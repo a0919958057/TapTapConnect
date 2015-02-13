@@ -70,18 +70,13 @@ public class MainActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		// ActionBar actbar = getActionBar();
-		// actbar.setDisplayHomeAsUpEnabled(true);
+		processView();
+		processModel();
+		processController();
 
-		setContentView(R.layout.activity_main);
-		dotview = new DotView(this);
-		dotview.setBackgroundColor(Color.BLACK);
-		((FrameLayout) findViewById(R.id.root2)).addView(dotview, 0);
+	}
 
-		setupBluetooth();
-		mVibrator = (Vibrator) getApplication().getSystemService(
-				Service.VIBRATOR_SERVICE);
-
+	private void processModel() {
 		gamehandler1 = new GameObjectHandler();
 		gamehandler2 = new GameObjectHandler();
 		gamehandler3 = new GameObjectHandler();
@@ -89,16 +84,26 @@ public class MainActivity extends Activity {
 		array.add(gamehandler1);
 		array.add(gamehandler2);
 		array.add(gamehandler3);
+	}
 
+	private void processView() {
+		setContentView(R.layout.activity_main);
+		dotview = new DotView(this);
+		dotview.setBackgroundColor(Color.BLACK);
+		((FrameLayout) findViewById(R.id.root2)).addView(dotview, 0);
+		mVibrator = (Vibrator) getApplication().getSystemService(
+				Service.VIBRATOR_SERVICE);
+	}
+
+	private void processController() {
+		setupBluetooth();
 		dotGenerator = new DotGenerator(gamehandler3, dotview, Color.YELLOW);
 
 		Thread thread = new Thread(dotGenerator);
 		thread.start();
-
 		for (GameObjectHandler object : array) {
 			object.setListener(new ObjectsLinstener(object));
 		}
-
 		(buttonRed = (Button) findViewById(R.id.button_red))
 				.setOnClickListener(new ButtonListener());
 		(buttonGreen = (Button) findViewById(R.id.button_green))
@@ -188,6 +193,9 @@ public class MainActivity extends Activity {
 
 	}
 
+	/**
+	 * GameObjectHandlerª¬ºA²âÅ¥¾¹
+	 */
 	class ObjectsLinstener implements GameObjectHandler.GameObjectListener {
 
 		public GameObjectHandler linstenOnwer;
@@ -588,10 +596,11 @@ public class MainActivity extends Activity {
 		startActivityForResult(new Intent(this, BluetoothActivity.class),
 				BluetoothActivity.RETURN_MAC_ADDRESS);
 	}
+
 	/**
 	 * 
 	 */
-	public static String getDeviceName(){
+	public static String getDeviceName() {
 		return mConnectedDeviceName;
 	}
 
