@@ -4,5 +4,6 @@
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="textview_bt_name">10pt</dimen>
+    <dimen name="itemview_padding">4pt</dimen>
 
 </resources>

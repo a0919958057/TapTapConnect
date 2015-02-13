@@ -36,6 +36,7 @@ public final class R {
          */
         public static final int activity_horizontal_margin=0x7f060000;
         public static final int activity_vertical_margin=0x7f060001;
+        public static final int itemview_padding=0x7f060003;
         public static final int textview_bt_name=0x7f060002;
     }
     public static final class drawable {
@@ -44,19 +45,22 @@ public final class R {
         public static final int ic_launcher=0x7f020002;
     }
     public static final class id {
-        public static final int FrameLayout1=0x7f0a000a;
-        public static final int action_bt_activity=0x7f0a000f;
-        public static final int action_bt_search=0x7f0a000d;
-        public static final int action_settings=0x7f0a000c;
+        public static final int FrameLayout1=0x7f0a000d;
+        public static final int action_bt_activity=0x7f0a0012;
+        public static final int action_bt_search=0x7f0a0010;
+        public static final int action_settings=0x7f0a000f;
         public static final int button_bt_unpair=0x7f0a0002;
         public static final int button_count=0x7f0a0009;
-        public static final int button_dialog2=0x7f0a000b;
+        public static final int button_dialog2=0x7f0a000e;
         public static final int button_green=0x7f0a0003;
         public static final int button_red=0x7f0a0008;
         public static final int editText1=0x7f0a0006;
         public static final int editText2=0x7f0a0007;
+        public static final int imageview_bluetooth=0x7f0a000a;
+        public static final int itemview_text1=0x7f0a000b;
+        public static final int itemview_text2=0x7f0a000c;
         public static final int listview_bt=0x7f0a0001;
-        public static final int manu_clear=0x7f0a000e;
+        public static final int manu_clear=0x7f0a0011;
         public static final int root=0x7f0a0004;
         public static final int root2=0x7f0a0005;
         public static final int textview_status=0x7f0a0000;
@@ -64,8 +68,9 @@ public final class R {
     public static final class layout {
         public static final int activity_bluetooth=0x7f030000;
         public static final int activity_main=0x7f030001;
-        public static final int device_textview=0x7f030002;
-        public static final int dialog_fragment=0x7f030003;
+        public static final int device_itemview=0x7f030002;
+        public static final int device_textview=0x7f030003;
+        public static final int dialog_fragment=0x7f030004;
     }
     public static final class menu {
         public static final int bluetooth=0x7f090000;
@@ -87,6 +92,9 @@ public final class R {
         public static final int button_bt_pair=0x7f07000d;
         public static final int button_green=0x7f070001;
         public static final int button_red=0x7f070000;
+        public static final int connect_fail=0x7f07001d;
+        public static final int device_mac=0x7f07001c;
+        public static final int device_name=0x7f07001b;
         public static final int dialog_info=0x7f07001a;
         public static final int hello_world=0x7f07000a;
         public static final int inspect_count=0x7f070003;

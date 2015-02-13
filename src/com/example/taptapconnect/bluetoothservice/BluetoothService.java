@@ -11,7 +11,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
-import android.widget.ArrayAdapter;
 
 public class BluetoothService {
 	// DEBUG標籤
@@ -24,8 +23,7 @@ public class BluetoothService {
 	static Set<BluetoothDevice> btDevices;
 	private static BluetoothDevice mPairedDevice;
 	
-	
-    private final BluetoothAdapter mAdapter;
+	private final BluetoothAdapter mAdapter;
     private final Handler mHandler;
     private AcceptThread mInsecureAcceptThread;
     private ConnectThread mConnectThread;
@@ -261,7 +259,7 @@ public class BluetoothService {
 		// Send a failure message back to the Activity
 		Message msg = mHandler.obtainMessage(Constants.MESSAGE_TOAST);
 		Bundle bundle = new Bundle();
-		bundle.putString(Constants.TOAST, "Unable to connect device");
+		bundle.putString(Constants.TOAST, "藍芽連線失敗");
 		msg.setData(bundle);
 		mHandler.sendMessage(msg);
 
@@ -276,7 +274,7 @@ public class BluetoothService {
 		// Send a failure message back to the Activity
 		Message msg = mHandler.obtainMessage(Constants.MESSAGE_TOAST);
 		Bundle bundle = new Bundle();
-		bundle.putString(Constants.TOAST, "Device connection was lost");
+		bundle.putString(Constants.TOAST, "藍芽連結已經斷線");
 		msg.setData(bundle);
 		mHandler.sendMessage(msg);
 
@@ -510,6 +508,7 @@ public class BluetoothService {
 	public static String getPairedID() {
 		return mPairedDevice.getName() + "[" + mPairedDevice.getAddress() + "]";
 	}
+
 
 
 }

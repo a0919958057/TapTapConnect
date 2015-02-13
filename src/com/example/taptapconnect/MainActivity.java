@@ -24,6 +24,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.os.Vibrator;
+import android.sax.StartElementListener;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -51,7 +52,6 @@ public class MainActivity extends Activity {
 	private GameObjectHandler gamehandler1, gamehandler2, gamehandler3;
 	private List<GameObjectHandler> array = new ArrayList<GameObjectHandler>();
 	private DotView dotview;
-	private BluetoothAdapter mAdapter;
 	private BluetoothService mBTService;
 	private DotGenerator dotGenerator;
 	private Button buttonRed;
@@ -63,8 +63,8 @@ public class MainActivity extends Activity {
 	volatile private boolean isRemoteOnPrass;
 	volatile private boolean isRemoteOnTouch;
 
-	public String mConnectedDeviceName;
-
+	private static BluetoothAdapter mAdapter;
+	private static String mConnectedDeviceName;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -336,11 +336,12 @@ public class MainActivity extends Activity {
 
 		}
 
-		public void makeDot(final GameObjectHandler dots, DotView view, int color) {
-		
+		public void makeDot(final GameObjectHandler dots, DotView view,
+				int color) {
+
 			dots.add(new GameObject((float) getPositionX(dots, view),
 					(float) getPositionY(dots, view), color, (float) 10.0));
-		
+
 			view.setDotsArray(array);
 		}
 
@@ -418,7 +419,14 @@ public class MainActivity extends Activity {
 			}
 			break;
 		case BluetoothActivity.RETURN_MAC_ADDRESS:
-			connectDevice(data);
+			switch (resultCode) {
+			case Activity.RESULT_OK:
+				connectDevice(data);
+				break;
+
+			default:
+				break;
+			}
 		}
 	}
 
@@ -503,6 +511,7 @@ public class MainActivity extends Activity {
 					setStatus(R.string.title_connecting);
 					break;
 				case BluetoothService.STATE_LISTEN:
+					mConnectedDeviceName = null;
 				case BluetoothService.STATE_NONE:
 					setStatus(R.string.title_not_connected);
 					break;
@@ -576,7 +585,14 @@ public class MainActivity extends Activity {
 	 */
 
 	private void startBluetoothActivity() {
-		startActivity(new Intent(this, BluetoothActivity.class));
+		startActivityForResult(new Intent(this, BluetoothActivity.class),
+				BluetoothActivity.RETURN_MAC_ADDRESS);
+	}
+	/**
+	 * 
+	 */
+	public static String getDeviceName(){
+		return mConnectedDeviceName;
 	}
 
 }
