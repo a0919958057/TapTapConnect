@@ -164,6 +164,8 @@ public class MapItem {
 		boolean update(MapItem item);
 
 		boolean delete(long id);
+
+		boolean deleteAll();
 	}
 
 	interface ImapItemReadable {

@@ -37,5 +37,6 @@
     <string name="device_name">裝置名稱</string>
     <string name="device_mac">裝置MAC位置</string>
     <string name="connect_fail">無法連接至裝置</string>
+    <string name="clear_all_dot">清除所有點點</string>
 
 </resources>

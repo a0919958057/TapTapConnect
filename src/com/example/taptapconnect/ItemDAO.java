@@ -3,7 +3,6 @@ package com.example.taptapconnect;
 import java.util.ArrayList;
 import java.util.List;
 
-import android.R.integer;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -49,7 +48,7 @@ public class ItemDAO implements MapItem.ImapItemDAO {
 	public void close() {
 		db.close();
 	}
-
+	
 	@Override
 	public MapItem insert(MapItem item) {
 
@@ -91,6 +90,11 @@ public class ItemDAO implements MapItem.ImapItemDAO {
 	public boolean delete(long id) {
 		String where = KEY_ID + "=" + id;
 		return db.delete(TABLE_NAME, where, null) > 0;
+	}
+	
+	@Override
+	public boolean deleteAll() {
+		return db.delete(TABLE_NAME, null, null) == 1;
 	}
 
 	@Override
@@ -143,7 +147,7 @@ public class ItemDAO implements MapItem.ImapItemDAO {
 	public int getCount() {
 		int result = 0;
 
-		Cursor rawC = db.rawQuery("SELECT COUNT(*) FORM " + TABLE_NAME, null);
+		Cursor rawC = db.rawQuery("SELECT COUNT(*) FROM " + TABLE_NAME, null);
 
 		while (rawC.moveToNext()) {
 			result = rawC.getInt(0);

@@ -1,6 +1,15 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
-    <item android:id="@+id/action_bt_activity"
-          android:icon="@drawable/ic_action_bluetooth_searching"
-          android:title="@string/action_bt_activity"
-          android:showAsAction="ifRoom|withText"/>
+
+    <item
+        android:id="@+id/action_bt_activity"
+        android:icon="@drawable/ic_action_bluetooth_searching"
+        android:showAsAction="ifRoom|withText"
+        android:title="@string/action_bt_activity"/>
+    <item
+        android:id="@+id/action_dot_clear"
+        android:icon="@drawable/ic_action_discard"
+        android:showAsAction="ifRoom|withText"
+        android:title="@string/clear_all_dot">
+    </item>
+
 </menu>

@@ -1,6 +1,7 @@
 package com.example.taptapconnect;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import com.example.taptapconnect.btDialogFragment.callbackDialog;
@@ -12,11 +13,13 @@ import com.example.taptapconnect.gameobject.GameEvent;
 import com.example.taptapconnect.gameobject.GameObject;
 import com.example.taptapconnect.gameobject.GameObjectHandler;
 
+import android.R.integer;
 import android.annotation.SuppressLint;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.Service;
 import android.bluetooth.*;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -53,11 +56,13 @@ public class MainActivity extends Activity {
 	private List<GameObjectHandler> array = new ArrayList<GameObjectHandler>();
 	private DotView dotview;
 	private BluetoothService mBTService;
-	private DotGenerator dotGenerator;
+	private DotGenerator mDotGenerator;
 	private Button buttonRed;
 	private Button buttonGreen;
 	private Button buttonCount;
 	private Vibrator mVibrator;
+	
+	volatile private boolean isLoadFinish;
 
 	volatile private boolean isRemoteOnPrassOff;
 	volatile private boolean isRemoteOnPrass;
@@ -66,14 +71,18 @@ public class MainActivity extends Activity {
 	private static BluetoothAdapter mAdapter;
 	private static String mConnectedDeviceName;
 
+	private ItemDAO itemDAO;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		isLoadFinish = false;
 
 		processView();
 		processModel();
 		processController();
 
+		isLoadFinish = true;
 	}
 
 	private void processModel() {
@@ -84,6 +93,7 @@ public class MainActivity extends Activity {
 		array.add(gamehandler1);
 		array.add(gamehandler2);
 		array.add(gamehandler3);
+
 	}
 
 	private void processView() {
@@ -96,13 +106,13 @@ public class MainActivity extends Activity {
 	}
 
 	private void processController() {
-		setupBluetooth();
-		dotGenerator = new DotGenerator(gamehandler3, dotview, Color.YELLOW);
+		mDotGenerator = new DotGenerator(gamehandler3, dotview, Color.YELLOW);
 
-		Thread thread = new Thread(dotGenerator);
+		Thread thread = new Thread(mDotGenerator);
 		thread.start();
+		ObjectsLinstener oj = new ObjectsLinstener();
 		for (GameObjectHandler object : array) {
-			object.setListener(new ObjectsLinstener(object));
+			object.setListener(oj);
 		}
 		(buttonRed = (Button) findViewById(R.id.button_red))
 				.setOnClickListener(new ButtonListener());
@@ -120,6 +130,39 @@ public class MainActivity extends Activity {
 				return true;
 			}
 		});
+
+		// 存取舊有資料
+		itemDAO = new ItemDAO(getApplication());
+		if (itemDAO.getCount() > 0) {
+			List<MapItem> itemlist = itemDAO.getAll();
+			for (MapItem mapItem : itemlist) {
+				switch (mapItem.getColor()) {
+				case 1:
+					Log.i("ItemDAO","case1");
+					gamehandler1.add(new GameObject((float) mapItem
+							.getPosition()[0],
+							(float) mapItem.getPosition()[1], Color.GRAY,
+							(float) 10.0));
+					break;
+				case 2:
+					Log.i("ItemDAO","case2");
+					gamehandler2.add(new GameObject((float) mapItem
+							.getPosition()[0],
+							(float) mapItem.getPosition()[1], Color.MAGENTA,
+							(float) 10.0));
+					break;
+
+				case 3:
+					Log.i("ItemDAO","case3");
+					gamehandler3.add(new GameObject((float) mapItem
+							.getPosition()[0],
+							(float) mapItem.getPosition()[1], Color.LTGRAY,
+							(float) 10.0));
+					break;
+				}
+			}
+		}
+		setupBluetooth();
 	}
 
 	@Override
@@ -135,11 +178,12 @@ public class MainActivity extends Activity {
 		case R.id.action_bt_activity:
 			startActivityForResult(new Intent(this, BluetoothActivity.class),
 					BluetoothActivity.RETURN_MAC_ADDRESS);
-			// TODO 這邊記得要做Intent優化
-
-			// for (GameObjectHandler objects : array) {
-			// objects.clear();
-			// }
+			break;
+		case R.id.action_dot_clear:
+			for (GameObjectHandler objects : array) {
+				objects.clear();
+			}
+			break;
 		}
 		return super.onOptionsItemSelected(item);
 	}
@@ -153,7 +197,7 @@ public class MainActivity extends Activity {
 			switch (v.getId()) {
 			case R.id.button_red:
 
-				dotGenerator.makeDot(gamehandler1, dotview, Color.RED);
+				mDotGenerator.makeDot(gamehandler1, dotview, Color.RED);
 				textview1.setText(String.valueOf(gamehandler1.peekGameObject()
 						.getX()));
 				textview2.setText(String.valueOf(gamehandler1.peekGameObject()
@@ -167,7 +211,7 @@ public class MainActivity extends Activity {
 				break;
 			case R.id.button_green:
 
-				dotGenerator.makeDot(gamehandler2, dotview, Color.GREEN);
+				mDotGenerator.makeDot(gamehandler2, dotview, Color.GREEN);
 				textview1.setText(String.valueOf(gamehandler2.peekGameObject()
 						.getX()));
 				textview2.setText(String.valueOf(gamehandler2.peekGameObject()
@@ -181,7 +225,7 @@ public class MainActivity extends Activity {
 				textview2.setText(String.valueOf(gamehandler2.getCount()));
 
 				// TODO 記得刪除
-				dotGenerator.stop();
+				mDotGenerator.stop();
 
 				Log.i(this.getClass().getName(), "Button3 prass");
 				break;
@@ -198,78 +242,86 @@ public class MainActivity extends Activity {
 	 */
 	class ObjectsLinstener implements GameObjectHandler.GameObjectListener {
 
-		public GameObjectHandler linstenOnwer;
+		private class ModifyTranform implements CanvasTransformation {
+			private final int objectCount;
 
-		public void setOnwer(GameObjectHandler onwer) {
-			this.linstenOnwer = onwer;
+			private ModifyTranform(int objectCount) {
+				this.objectCount = objectCount;
+			}
+
+			@Override
+			public void tranform(Canvas canvas) {
+				canvas.translate(getModifyX(), getModifyY());
+				canvas.rotate((float) (objectCount * -12));
+
+			}
+
+			@Override
+			public String getString() {
+				return null;
+			}
+
+			private float getModifyX() {
+				double x = dotview.getWidth() / 2;
+				double y = dotview.getHeight() / 2;
+				return (float) modifyY(x, y);
+			}
+
+			private double modifyY(double x, double y) {
+				return x + Math.sqrt(x * x + y * y) * ratioHeightAfter(x, y);
+			}
+
+			private double ratioHeightAfter(double x, double y) {
+				return Math.cos(degreeAfter(x, y));
+			}
+
+			private float getModifyY() {
+				double x = dotview.getWidth() / 2;
+				double y = dotview.getHeight() / 2;
+				return (float) modifyX(x, y);
+			}
+
+			private double modifyX(double x, double y) {
+				return y - Math.sqrt(x * x + y * y) * ratioWidthAfter(x, y);
+			}
+
+			private double ratioWidthAfter(double x, double y) {
+				return Math.sin(degreeAfter(x, y));
+			}
+
+			private double degreeAfter(double x, double y) {
+				return Math.PI - Math.atan(y / x) + degreeChange();
+			}
+
+			private double degreeChange() {
+				return objectCount * Math.PI / 15;
+			}
 		}
 
 		public ObjectsLinstener() {
-			this(null);
-		}
-
-		public ObjectsLinstener(GameObjectHandler onwer) {
-			setOnwer(onwer);
 		}
 
 		@Override
 		public void onChange(GameEvent event) {
-			dotview.setTransformation(new CanvasTransformation() {
-
-				@Override
-				public void tranform(Canvas canvas) {
-					canvas.translate(getModifyX(), getModifyY());
-					canvas.rotate((float) (linstenOnwer.getCount() * -12));
-
-				}
-
-				@Override
-				public String getString() {
-					return null;
-				}
-
-				private float getModifyX() {
-					double x = dotview.getWidth() / 2;
-					double y = dotview.getHeight() / 2;
-					return (float) modifyY(x, y);
-				}
-
-				private double modifyY(double x, double y) {
-					return x + Math.sqrt(x * x + y * y)
-							* ratioHeightAfter(x, y);
-				}
-
-				private double ratioHeightAfter(double x, double y) {
-					return Math.cos(degreeAfter(x, y));
-				}
-
-				private float getModifyY() {
-					double x = dotview.getWidth() / 2;
-					double y = dotview.getHeight() / 2;
-					return (float) modifyX(x, y);
-				}
-
-				private double modifyX(double x, double y) {
-					return y - Math.sqrt(x * x + y * y) * ratioWidthAfter(x, y);
-				}
-
-				private double ratioWidthAfter(double x, double y) {
-					return Math.sin(degreeAfter(x, y));
-				}
-
-				private double degreeAfter(double x, double y) {
-					return Math.PI - Math.atan(y / x) + degreeChange();
-				}
-
-				private double degreeChange() {
-					return linstenOnwer.getCount() * Math.PI / 15;
-				}
-			});
+			int objectCount = event.getGameObjectHandler().getCount();
+			dotview.setTransformation(new ModifyTranform(objectCount));
 			dotview.invalidate();
+
+			if (isLoadFinish) {
+				itemDAO.insert(new MapItem(
+						event.getGameObjectHandler().getId() + 1, event
+								.getGameobject().getX(), event.getGameobject()
+								.getY()));
+			}
 		}
 
 		@Override
 		public void onEmpty(GameEvent event) {
+			if (isLoadFinish) {
+				itemDAO.deleteAll();
+			}
+			dotview.invalidate();
+
 		}
 
 		@Override

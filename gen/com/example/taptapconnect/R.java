@@ -41,13 +41,15 @@ public final class R {
     }
     public static final class drawable {
         public static final int ic_action_bluetooth_searching=0x7f020000;
-        public static final int ic_action_search=0x7f020001;
-        public static final int ic_launcher=0x7f020002;
+        public static final int ic_action_discard=0x7f020001;
+        public static final int ic_action_search=0x7f020002;
+        public static final int ic_launcher=0x7f020003;
     }
     public static final class id {
         public static final int FrameLayout1=0x7f0a000d;
         public static final int action_bt_activity=0x7f0a0012;
         public static final int action_bt_search=0x7f0a0010;
+        public static final int action_dot_clear=0x7f0a0013;
         public static final int action_settings=0x7f0a000f;
         public static final int button_bt_unpair=0x7f0a0002;
         public static final int button_count=0x7f0a0009;
@@ -92,6 +94,7 @@ public final class R {
         public static final int button_bt_pair=0x7f07000d;
         public static final int button_green=0x7f070001;
         public static final int button_red=0x7f070000;
+        public static final int clear_all_dot=0x7f07001e;
         public static final int connect_fail=0x7f07001d;
         public static final int device_mac=0x7f07001c;
         public static final int device_name=0x7f07001b;

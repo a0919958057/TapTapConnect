@@ -16,6 +16,7 @@ public class GameObjectHandler implements Iterable<GameObject> {
 	private static int handlerCounter = 0;
 	Deque<GameObject> gameObjects;
 	private GameObjectListener listener;
+	private int id;
 
 	public GameObjectHandler() {
 		gameObjects = new ArrayDeque<GameObject>();
@@ -37,6 +38,7 @@ public class GameObjectHandler implements Iterable<GameObject> {
 			public void onDelete(GameEvent event) {}
 			
 		};
+		setId(handlerCounter);
 		handlerCounter++;
 		Log.i(this.getClass().getName(), "GameObjectHandler Create!");
 	}
@@ -90,7 +92,7 @@ public class GameObjectHandler implements Iterable<GameObject> {
 	 */
 	public void addLast(GameObject gameobject) {
 		gameObjects.addLast(gameobject);
-		notifyListener(new GameEvent(gameobject, GameEvent.GAME_OBJECT_CHANGE));
+		notifyListener(new GameEvent(this,gameobject, GameEvent.GAME_OBJECT_CHANGE));
 	}
 
 	/**
@@ -102,7 +104,7 @@ public class GameObjectHandler implements Iterable<GameObject> {
 	 */
 	public void addFirst(GameObject gameobject) {
 		gameObjects.addFirst(gameobject);
-		notifyListener(new GameEvent(gameobject, GameEvent.GAME_OBJECT_CHANGE));
+		notifyListener(new GameEvent(this,gameobject, GameEvent.GAME_OBJECT_CHANGE));
 	}
 
 	/**
@@ -118,7 +120,7 @@ public class GameObjectHandler implements Iterable<GameObject> {
 	 * @return ¹CÀ¸ª«¥ó
 	 */
 	public GameObject peekGameObject() {
-		notifyListener(new GameEvent(gameObjects.peekLast(),GameEvent.GAME_OBJECT_CHANGE));
+		notifyListener(new GameEvent(this,gameObjects.peekLast(),GameEvent.GAME_OBJECT_CHANGE));
 		return gameObjects.peekLast();
 	}
 	/**
@@ -128,9 +130,9 @@ public class GameObjectHandler implements Iterable<GameObject> {
 	public GameObject pollFirstGameObject() {
 		GameObject tempObject = gameObjects.pollFirst();
 		if (tempObject == null) {
-			notifyListener(new GameEvent(GameEvent.GAME_OBJECT_EMPTY));
+			notifyListener(new GameEvent(this,GameEvent.GAME_OBJECT_EMPTY));
 		} else {
-			notifyListener(new GameEvent(tempObject,
+			notifyListener(new GameEvent(this,tempObject,
 					GameEvent.GAME_OBJECT_DELETE));
 		}
 		return tempObject;
@@ -143,17 +145,17 @@ public class GameObjectHandler implements Iterable<GameObject> {
 	public GameObject pollLastGameObject() {
 		GameObject tempObject = gameObjects.pollLast();
 		if (tempObject == null) {
-			notifyListener(new GameEvent(GameEvent.GAME_OBJECT_EMPTY));
+			notifyListener(new GameEvent(this,GameEvent.GAME_OBJECT_EMPTY));
 		} else {
-			notifyListener(new GameEvent(tempObject,
+			notifyListener(new GameEvent(this,tempObject,
 					GameEvent.GAME_OBJECT_DELETE));
 		}
 		return tempObject;
 	}
 	
 	public void clear() {
-		notifyListener(new GameEvent(GameEvent.GAME_OBJECT_EMPTY));
 		this.gameObjects.clear();
+		notifyListener(new GameEvent(this,GameEvent.GAME_OBJECT_EMPTY));
 	}
 
 	public void notifyListener(GameEvent event) {
@@ -234,6 +236,20 @@ public class GameObjectHandler implements Iterable<GameObject> {
 	@Override
 	public Iterator<GameObject> iterator() {
 		return gameObjects.iterator();
+	}
+
+	/**
+	 * @return the id
+	 */
+	public int getId() {
+		return id;
+	}
+
+	/**
+	 * @param id the id to set
+	 */
+	public void setId(int id) {
+		this.id = id;
 	}
 
 }
