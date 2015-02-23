@@ -13,13 +13,13 @@ import android.os.Message;
 import android.util.Log;
 
 public class BluetoothService {
-	// DEBUG¼ĞÅÒ
+	// DEBUGæ¨™ç±¤
 	private static final String TAG = "BluetoothService";
-	// ÂÅªŞUUID
+	// è—èŠ½UUID
 	private static final UUID uuid = UUID
 			.fromString("8E5579F0-785B-44B3-BCE9-BCF8F0F157FA");
 	public static final String NAME_SERVICE = "taptapconnect.BluetoothService";
-	// ¼Æ¾ÚºŞ²z
+	// æ•¸æ“šç®¡ç†
 	static Set<BluetoothDevice> btDevices;
 	private static BluetoothDevice mPairedDevice;
 	
@@ -42,7 +42,7 @@ public class BluetoothService {
 	public BluetoothService() {
 		this(null);
 	}
-	// «Øºc¤l
+	// å»ºæ§‹å­
 	public BluetoothService(Handler handler) {
 		mAdapter = BluetoothAdapter.getDefaultAdapter();
 		btDevices = mAdapter.getBondedDevices();
@@ -50,7 +50,7 @@ public class BluetoothService {
 	}
 
 	/**
-	 * ¨ú±o¸Ë¸m¦Cªí
+	 * å–å¾—è£ç½®åˆ—è¡¨
 	 */
 	public Set<BluetoothDevice> getDevices() {
 
@@ -96,14 +96,14 @@ public class BluetoothService {
 	}
 
 	/**
-	 * ¶}©lBluetoothService¹B§@
+	 * é–‹å§‹BluetoothServiceé‹ä½œ
 	 * 
-	 * 1.¨ú®ø©Ò¦³¹Á¸Õ³s±µªº°õ¦æºü
-	 * 2.¨ú®ø©Ò¦³¤w³s±µªº°õ¦æºü
+	 * 1.å–æ¶ˆæ‰€æœ‰å˜—è©¦é€£æ¥çš„åŸ·è¡Œç·’
+	 * 2.å–æ¶ˆæ‰€æœ‰å·²é€£æ¥çš„åŸ·è¡Œç·’
 	 * 
-	 * ½T«O¨S¦³¨ä¥L°õ¦æÄò·|¦s¨ú¨ìÂÅªŞ¸Ë¸m«á
+	 * ç¢ºä¿æ²’æœ‰å…¶ä»–åŸ·è¡ŒçºŒæœƒå­˜å–åˆ°è—èŠ½è£ç½®å¾Œ
 	 * 
-	 * °õ¦æAcceptedThread¨Ó¶i¦æ²âÅ¥·s¸Ë¸m¥[¤J
+	 * åŸ·è¡ŒAcceptedThreadä¾†é€²è¡Œè†è½æ–°è£ç½®åŠ å…¥
 	 * 
 	 */
 	public synchronized void start() {
@@ -259,7 +259,7 @@ public class BluetoothService {
 		// Send a failure message back to the Activity
 		Message msg = mHandler.obtainMessage(Constants.MESSAGE_TOAST);
 		Bundle bundle = new Bundle();
-		bundle.putString(Constants.TOAST, "ÂÅªŞ³s½u¥¢±Ñ");
+		bundle.putString(Constants.TOAST, "è—èŠ½é€£ç·šå¤±æ•—");
 		msg.setData(bundle);
 		mHandler.sendMessage(msg);
 
@@ -274,7 +274,7 @@ public class BluetoothService {
 		// Send a failure message back to the Activity
 		Message msg = mHandler.obtainMessage(Constants.MESSAGE_TOAST);
 		Bundle bundle = new Bundle();
-		bundle.putString(Constants.TOAST, "ÂÅªŞ³sµ²¤w¸gÂ_½u");
+		bundle.putString(Constants.TOAST, "è—èŠ½é€£çµå·²ç¶“æ–·ç·š");
 		msg.setData(bundle);
 		mHandler.sendMessage(msg);
 

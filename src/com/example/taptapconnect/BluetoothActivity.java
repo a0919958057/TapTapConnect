@@ -66,12 +66,12 @@ public class BluetoothActivity extends Activity {
 					+ btobject.getAddress());
 		}
 
-		// TODO : §¹¦¨·N¹Ï¹LÂo¾¹
-		// µù¥U¼s¼½¹LÂo¾¹ : ·í°»´ú¨ì¸Ë¸m®É
+		// TODO : å®Œæˆæ„åœ–éæ¿¾å™¨
+		// è¨»å†Šå»£æ’­éæ¿¾å™¨ : ç•¶åµæ¸¬åˆ°è£ç½®æ™‚
 		IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
 		this.registerReceiver(mReceiver, filter);
 
-		// µù¥U¼s¼½¹LÂo¾¹ : ·í¸Ë¸m°»´ú§¹²¦®É
+		// è¨»å†Šå»£æ’­éæ¿¾å™¨ : ç•¶è£ç½®åµæ¸¬å®Œç•¢æ™‚
 		filter = new IntentFilter(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
 		this.registerReceiver(mReceiver, filter);
 
@@ -93,7 +93,7 @@ public class BluetoothActivity extends Activity {
 			doDiscovery();
 			ensureDiscoverable();
 			break;
-		// TODO : ¼W¥[·j´M¥\¯à
+		// TODO : å¢åŠ æœå°‹åŠŸèƒ½
 
 		}
 		return super.onMenuItemSelected(featureId, item);
@@ -156,7 +156,7 @@ public class BluetoothActivity extends Activity {
 	};
 
 	/**
-	 * BroadcastReceiver·|³Q©I¥s·í¸Ë¸m³Qµo²{ ¨Ã¥B¦b·j´Mµ²§ô®É§ïÅÜ¼ĞÃD
+	 * BroadcastReceiveræœƒè¢«å‘¼å«ç•¶è£ç½®è¢«ç™¼ç¾ ä¸¦ä¸”åœ¨æœå°‹çµæŸæ™‚æ”¹è®Šæ¨™é¡Œ
 	 * 
 	 * The BroadcastReceiver that listens for discovered devices and changes the
 	 * title when discovery is finished
@@ -283,7 +283,7 @@ class DeviceListAdapter extends ArrayAdapter<String> {
 			deviceMac = "";
 			deviceName = "";
 		}
-		// ·íconvertView==Null®É±N«Ø¥ß·sªºview
+		// ç•¶convertView==Nullæ™‚å°‡å»ºç«‹æ–°çš„view
 		if (convertView == null) {
 
 			itemView = new LinearLayout(getContext());
@@ -296,7 +296,7 @@ class DeviceListAdapter extends ArrayAdapter<String> {
 			itemView = (LinearLayout) convertView;
 		}
 
-		//¨ú±omResourse¤ºªº¥¬§½
+		//å–å¾—mResourseå…§çš„å¸ƒå±€
 		TextView tvDeviceName = (TextView) itemView
 				.findViewById(R.id.itemview_text1);
 		TextView tvDeviceMAC = (TextView) itemView
@@ -307,7 +307,7 @@ class DeviceListAdapter extends ArrayAdapter<String> {
 		tvDeviceMAC.setText(deviceMac);
 		Log.i(LIST_VIEW_ADAPTER, MainActivity.getDeviceName() +deviceName+ "0");
 
-		// ·í¨ú±o¤§DeviceName¤£¬°¹s®É
+		// ç•¶å–å¾—ä¹‹DeviceNameä¸ç‚ºé›¶æ™‚
 		if (MainActivity.getDeviceName() != null) {
 			Log.i(LIST_VIEW_ADAPTER, MainActivity.getDeviceName() + "1");
 			

@@ -59,7 +59,7 @@ public class DotView extends View {
 
 	/**
 	 * @param a
-	 *            ¹CÀ¸¸s¶°¤§°}¦C
+	 *            éŠæˆ²ç¾¤é›†ä¹‹é™£åˆ—
 	 */
 	public void setDotsArray(List<GameObjectHandler> a) {
 
@@ -98,10 +98,10 @@ public class DotView extends View {
 		paint.setStyle(Style.STROKE);
 		paint.setColor(hasFocus() ? Color.BLUE : Color.GRAY);
 		canvas.drawRect(0, 0, getWidth() - 1, getHeight() - 1, paint);
-		//Àx¦s¥¼§ó§ï®É¤§Canvas
+		//å„²å­˜æœªæ›´æ”¹æ™‚ä¹‹Canvas
 		canvas.save();
 		
-		//TODO »İ­n¾ã¦X¶i¥h¬°Drawableª«¥ó
+		//TODO éœ€è¦æ•´åˆé€²å»ç‚ºDrawableç‰©ä»¶
 		//////////////////////////////////////////////////////////
 		modifyCanvas(canvas);
 		if (null == dotsArray) {
@@ -127,17 +127,17 @@ public class DotView extends View {
 		}
 		//////////////////////////////////////////////////////////
 		
-		//¦^´_©|¥¼­×§ï¤§Canvas
+		//å›å¾©å°šæœªä¿®æ”¹ä¹‹Canvas
 		canvas.restore();
 	}
 
 	private CanvasTransformation cvasTf;
 
 	/**
-	 * ³]©wCanvasTransformation
+	 * è¨­å®šCanvasTransformation
 	 * 
 	 * @param canvasTransformation
-	 *            ¹ê§@CanvasTransformation¤§ª«¥ó
+	 *            å¯¦ä½œCanvasTransformationä¹‹ç‰©ä»¶
 	 */
 
 	public void setTransformation(CanvasTransformation canvasTransformation) {
@@ -145,11 +145,11 @@ public class DotView extends View {
 	}
 
 	/**
-	 * ¤Ş¥Î³]¸m¹LªºCanvasTransformation.tranform¤èªk­×§ï¤Ş¼Æ¤§ª«¥ó
-	 * ¦pªGCanvasTransformationª«¥ó¬°null«hdo nothing
+	 * å¼•ç”¨è¨­ç½®éçš„CanvasTransformation.tranformæ–¹æ³•ä¿®æ”¹å¼•æ•¸ä¹‹ç‰©ä»¶
+	 * å¦‚æœCanvasTransformationç‰©ä»¶ç‚ºnullå‰‡do nothing
 	 * 
 	 * @param canvas
-	 *            »İ­×§ïªºCanvasª«¥ó
+	 *            éœ€ä¿®æ”¹çš„Canvasç‰©ä»¶
 	 */
 	private void modifyCanvas(Canvas canvas) {
 		if (cvasTf != null) {

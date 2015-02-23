@@ -57,9 +57,9 @@ public class MainActivity extends Activity {
 						.getX()));
 				textview2.setText(String.valueOf(gamehandler1.peekGameObject()
 						.getY()));
-				// TODO ¼W¥[ÂÅªŞ³s±µ¤§±±¨î¶µ ¦¹³B¬°¼È®É
+				// TODO å¢åŠ è—èŠ½é€£æ¥ä¹‹æ§åˆ¶é … æ­¤è™•ç‚ºæš«æ™‚
 				sendMessage(BLUETEETH_REMOTE_TOUCH);
-				// TODO ¦¹¬°´ú¸Õ°O±o§R°£
+				// TODO æ­¤ç‚ºæ¸¬è©¦è¨˜å¾—åˆªé™¤
 				mVibrator.vibrate(50);
 
 				Log.i(this.getClass().getName(), "Button1 prass");
@@ -71,7 +71,7 @@ public class MainActivity extends Activity {
 						.getX()));
 				textview2.setText(String.valueOf(gamehandler2.peekGameObject()
 						.getY()));
-				// TODO ¦¹¬°´ú¸Õ°O±o§R°£
+				// TODO æ­¤ç‚ºæ¸¬è©¦è¨˜å¾—åˆªé™¤
 				mVibrator.vibrate(100);
 				Log.i(this.getClass().getName(), "Button2 prass");
 				break;
@@ -79,7 +79,7 @@ public class MainActivity extends Activity {
 				textview1.setText(String.valueOf(gamehandler1.getCount()));
 				textview2.setText(String.valueOf(gamehandler2.getCount()));
 
-				// TODO °O±o§R°£
+				// TODO è¨˜å¾—åˆªé™¤
 				mDotGenerator.stop();
 
 				Log.i(this.getClass().getName(), "Button3 prass");
@@ -152,9 +152,9 @@ public class MainActivity extends Activity {
 		}
 
 		/**
-		 * ·s°õ¦æºü¤§run()¤èªk
+		 * æ–°åŸ·è¡Œç·’ä¹‹run()æ–¹æ³•
 		 * 
-		 * ¨C 1000} ²@¬í©I¥smakedots¤@¦¸
+		 * æ¯ 1000} æ¯«ç§’å‘¼å«makedotsä¸€æ¬¡
 		 */
 		@Override
 		public void run() {
@@ -171,14 +171,14 @@ public class MainActivity extends Activity {
 		}
 
 		/**
-		 * ¶}©lDotGenerationªº¹B§@
+		 * é–‹å§‹DotGenerationçš„é‹ä½œ
 		 */
 		public void start() {
 			this.isStop = false;
 		}
 
 		/**
-		 * °±¤îDotGenerationªº¹B§@
+		 * åœæ­¢DotGenerationçš„é‹ä½œ
 		 */
 		public void stop() {
 			this.isStop = true;
@@ -187,7 +187,7 @@ public class MainActivity extends Activity {
 	}
 
 	/**
-	 * GameObjectHandlerª¬ºA²âÅ¥¾¹
+	 * GameObjectHandlerç‹€æ…‹è†è½å™¨
 	 */
 	class ObjectsLinstener implements GameObjectHandler.GameObjectListener {
 
@@ -350,7 +350,7 @@ public class MainActivity extends Activity {
 
 	}
 
-	// ¥Î©óHandler.callback ¤§¸ê®Æ¬d¸ßkey
+	// ç”¨æ–¼Handler.callback ä¹‹è³‡æ–™æŸ¥è©¢key
 	public static final String BLUETEETH_REMOTE_PRASS = "remote_prass";
 
 	public static final String BLUETEETH_REMOTE_TOUCH = "remote_touch";
@@ -405,9 +405,9 @@ public class MainActivity extends Activity {
 		String address = data.getExtras().getString(
 				BluetoothActivity.EXTRA_DEVICE_ADDRESS);
 
-		// Åã¥Ü¿ï¨úª¬ºA®ğªw
+		// é¡¯ç¤ºé¸å–ç‹€æ…‹æ°£æ³¡
 		Toast.makeText(this,
-				"±z¿ï¨ú¤F" + mAdapter.getRemoteDevice(address).getName(),
+				"æ‚¨é¸å–äº†" + mAdapter.getRemoteDevice(address).getName(),
 				Toast.LENGTH_SHORT).show();
 
 		// Get the BluetoothDevice object
@@ -424,7 +424,7 @@ public class MainActivity extends Activity {
 		case BT_REQUEST_ENABLE:
 			switch (resultCode) {
 			case RESULT_CANCELED:
-				Toast.makeText(this, "¬°¤°»ò­n¨ú®ø©O?¤j¤j", Toast.LENGTH_LONG).show();
+				Toast.makeText(this, "ç‚ºä»€éº¼è¦å–æ¶ˆå‘¢?å¤§å¤§", Toast.LENGTH_LONG).show();
 				Log.i(this.getClass().getSimpleName(), "RESULT_CANCELED ");
 			case RESULT_OK:
 				setupBluetooth();
@@ -554,7 +554,7 @@ public class MainActivity extends Activity {
 			}
 		});
 
-//		// ¦s¨úÂÂ¦³¸ê®Æ
+//		// å­˜å–èˆŠæœ‰è³‡æ–™
 //		itemDAO = new ItemDAO(getApplication());
 //		if (itemDAO.getCount() > 0) {
 //			List<MapItem> itemlist = itemDAO.getAll();
@@ -611,7 +611,7 @@ public class MainActivity extends Activity {
 	}
 
 	/**
-	 * ¦V»·ºİ¸Ë¸mµo¥X°T®§
+	 * å‘é ç«¯è£ç½®ç™¼å‡ºè¨Šæ¯
 	 * 
 	 * @param message
 	 */
@@ -666,7 +666,7 @@ public class MainActivity extends Activity {
 		if (mAdapter == null) {
 			btDialogFragment.newInstance(this,
 					btDialogFragment.DEVICES_NOT_ENABLE, 6).show();
-			Toast.makeText(this, "¦¹¸Ë¸m¤£¤ä´©ÂÅªŞ", Toast.LENGTH_LONG).show();
+			Toast.makeText(this, "æ­¤è£ç½®ä¸æ”¯æ´è—èŠ½", Toast.LENGTH_LONG).show();
 			Log.e(this.getClass().getSimpleName(), "Blueteeth Not Support");
 			return;
 		}
@@ -694,7 +694,7 @@ public class MainActivity extends Activity {
 	}
 
 	/**
-	 * ¶}±ÒÂÅªŞ¸Ë¸m¿ï³æ
+	 * é–‹å•Ÿè—èŠ½è£ç½®é¸å–®
 	 */
 
 	private void startBluetoothActivity() {

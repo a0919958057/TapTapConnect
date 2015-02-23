@@ -7,11 +7,11 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 public class MyDBhelper extends SQLiteOpenHelper {
 
-	// ¸ê®Æ®w¦WºÙ
+	// è³‡æ–™åº«åç¨±
 	public static final String DATABASE_NAME = "mydata.db";
-	// ¸ê®Æ®wª©¥»¡A¸ê®Æµ²ºc§ïÅÜªº®É­Ô§ó§ï¼Æ¦r
+	// è³‡æ–™åº«ç‰ˆæœ¬ï¼Œè³‡æ–™çµæ§‹æ”¹è®Šçš„æ™‚å€™æ›´æ”¹æ•¸å­—
 	public static final int VERSON = 1;
-	// ¸ê®Æ®wª«¥ó
+	// è³‡æ–™åº«ç‰©ä»¶
 	private static SQLiteDatabase database;
 
 	public MyDBhelper(Context context, String name, CursorFactory factory,
@@ -21,9 +21,9 @@ public class MyDBhelper extends SQLiteOpenHelper {
 	}
 
 	public static SQLiteDatabase getDatabase(Context context) {
-		//°²¦p¸ê®Æ®w¬°ªÅ©Î¬O¤£¶}©ñÅª¨ú
+		//å‡å¦‚è³‡æ–™åº«ç‚ºç©ºæˆ–æ˜¯ä¸é–‹æ”¾è®€å–
 		if (database == null || !database.isOpen()) {
-			//«Ø¥ß·sDatabase
+			//å»ºç«‹æ–°Database
 			database = new MyDBhelper(context, DATABASE_NAME, null, VERSON)
 					.getWritableDatabase();
 		}
@@ -32,16 +32,16 @@ public class MyDBhelper extends SQLiteOpenHelper {
 
 	@Override
 	public void onCreate(SQLiteDatabase db) {
-		//«Ø¥ß·sªí®æ
+		//å»ºç«‹æ–°è¡¨æ ¼
 		db.execSQL(ItemDAO.CREATE_TABLE);
 
 	}
 
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-		//§R°£­ì¦³ªí®æ
+		//åˆªé™¤åŸæœ‰è¡¨æ ¼
 		db.execSQL("DROP TABLE IF EXISTS "+ItemDAO.TABLE_NAME);
-		//«Ø¥ß·sªí®æ
+		//å»ºç«‹æ–°è¡¨æ ¼
 		onCreate(db);
 		
 	}

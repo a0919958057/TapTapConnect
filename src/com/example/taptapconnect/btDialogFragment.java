@@ -29,14 +29,14 @@ public class btDialogFragment extends DialogFragment {
 	private volatile static Resources res;
 
 	/**
-	 * «Ø¥ß¤@­ÓDialog¹ê¨Ò
+	 * å»ºç«‹ä¸€å€‹Dialogå¯¦ä¾‹
 	 * 
 	 * @param fm
-	 *            ¤÷¬¡°Ê¤§FragmentManager
+	 *            çˆ¶æ´»å‹•ä¹‹FragmentManager
 	 * @param str
-	 *            ³]¸m¸Ó¬¡°Ê¤§Ãþ§O
+	 *            è¨­ç½®è©²æ´»å‹•ä¹‹é¡žåˆ¥
 	 * @param nNum
-	 *            ³]¸mDialogFragment¤§¥DÃD
+	 *            è¨­ç½®DialogFragmentä¹‹ä¸»é¡Œ
 	 */
 	
 	

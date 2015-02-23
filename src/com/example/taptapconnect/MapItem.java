@@ -14,19 +14,19 @@ public class MapItem {
 	private static final int DATA_CHANGE_POSITION = 2;
 	private static final int DATA_CHANGE_COLOR = 1;
 	private static final int DATA_CHANGE_DATE = 0;
-	// ¹w³]³]©w­È¤º®e
+	// é è¨­è¨­å®šå€¼å…§å®¹
 	public static final int COLOR_DEFAULT = Color.GREEN;
 	public static final double POSITION_X_DEAFULT = 0.0;
 	public static final double POSITION_Y_DEAFULT = 0.0;
 	public static final String CONTENT_DEAFULT = "";
-	// ª«¥ó¤º§t¸ê®Æ
+	// ç‰©ä»¶å…§å«è³‡æ–™
 	private int color;
 	private double positionX;
 	private double positionY;
 	private String content;
 	private int status;
 
-	// ·í¤º®eµo¥Í§ïÅÜªº®É­Ô©I¥s
+	// ç•¶å…§å®¹ç™¼ç”Ÿæ”¹è®Šçš„æ™‚å€™å‘¼å«
 	private void notifyChange(int dataChangeEvent) {
 		switch (dataChangeEvent) {
 		case DATA_CHANGE_DATE:
@@ -43,7 +43,7 @@ public class MapItem {
 
 	}
 
-	// ªí®æ¤º¸ê®ÆÄæ¦ì
+	// è¡¨æ ¼å…§è³‡æ–™æ¬„ä½
 	private String datetime;
 	private long itemId;
 
@@ -81,7 +81,7 @@ public class MapItem {
 
 	/**
 	 * 
-	 * @return position[] ¦^¶ÇX Y®y¼Ğ
+	 * @return position[] å›å‚³X Yåº§æ¨™
 	 */
 	public double[] getPosition() {
 		double[] result = { 0, 0 };
@@ -136,11 +136,11 @@ public class MapItem {
 
 	/**
 	 * @param c
-	 *            ¦â±m
+	 *            è‰²å½©
 	 * @param pX
-	 *            ¸g«×®y¼Ğ
+	 *            ç¶“åº¦åº§æ¨™
 	 * @param pY
-	 *            ½n«×®y¼Ğ
+	 *            ç·¯åº¦åº§æ¨™
 	 */
 	public MapItem(int c, double pX, double pY) {
 		SimpleDateFormat mformat = new SimpleDateFormat("yyyy-mm-dd_hh:mm:ss");

@@ -10,13 +10,13 @@ import android.database.sqlite.SQLiteDatabase;
 
 public class ItemDAO implements MapItem.ImapItemDAO {
 
-	// ªí®æ¦WºÙ
+	// è¡¨æ ¼åç¨±
 	public static final String TABLE_NAME = "item";
 
-	// ¸ê®Æ½s¸¹
+	// è³‡æ–™ç·¨è™Ÿ
 	public static final String KEY_ID = "_id";
 
-	// ªí®æ¤º¸ê®ÆÄæ¦ì
+	// è¡¨æ ¼å…§è³‡æ–™æ¬„ä½
 	public static final String DATETIME_COLUME = "datatime";
 	public static final String COLOR_COLUME = "color";
 	public static final String POSITION_X_COLUME = "position_x";
@@ -25,10 +25,10 @@ public class ItemDAO implements MapItem.ImapItemDAO {
 	public static final String STATUS_COLUME = "status";
 
 	/**
-	 * ¨Ï¥Î¤W¤è¸ê®ÆÄæ¦ì«Ø¥ßªí®æ
+	 * ä½¿ç”¨ä¸Šæ–¹è³‡æ–™æ¬„ä½å»ºç«‹è¡¨æ ¼
 	 * 
-	 * Äæ¦ì0:_id Äæ¦ì1:_datetime Äæ¦ì2:color Äæ¦ì3:positionX Äæ¦ì4:positionY Äæ¦ì5:content
-	 * Äæ¦ì6:status
+	 * æ¬„ä½0:_id æ¬„ä½1:_datetime æ¬„ä½2:color æ¬„ä½3:positionX æ¬„ä½4:positionY æ¬„ä½5:content
+	 * æ¬„ä½6:status
 	 */
 	public static final String CREATE_TABLE = "CREATE TABLE " + TABLE_NAME
 			+ "(" + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
@@ -36,15 +36,15 @@ public class ItemDAO implements MapItem.ImapItemDAO {
 			+ " INTEGER NOT NULL, " + POSITION_X_COLUME + " REAL NOT NULL, "
 			+ POSITION_Y_COLUME + " REAL NOT NULL, " + CONTENT_COLUME
 			+ " TEXT, " + STATUS_COLUME + " INTEGER) ";
-	// ¸ê®Æ®wª«¥ó
+	// è³‡æ–™åº«ç‰©ä»¶
 	private SQLiteDatabase db;
 
-	// «Øºc¤l
+	// å»ºæ§‹å­
 	public ItemDAO(Context context) {
 		db = MyDBhelper.getDatabase(context);
 	}
 
-	// Ãö³¬¸ê®Æ®w
+	// é—œé–‰è³‡æ–™åº«
 	public void close() {
 		db.close();
 	}
@@ -52,7 +52,7 @@ public class ItemDAO implements MapItem.ImapItemDAO {
 	@Override
 	public MapItem insert(MapItem item) {
 
-		// ¥[¤JContentValuesª«¥ó¸ê®Æ¥]¸Ë
+		// åŠ å…¥ContentValuesç‰©ä»¶è³‡æ–™åŒ…è£
 		ContentValues cValues = new ContentValues();
 		cValues.put(COLOR_COLUME, item.getColor());
 		cValues.put(POSITION_X_COLUME, item.getPosition()[0]);
@@ -61,7 +61,7 @@ public class ItemDAO implements MapItem.ImapItemDAO {
 		cValues.put(CONTENT_COLUME, item.getContent());
 		cValues.put(STATUS_COLUME, item.getSTATUS());
 
-		// ¥[¤J¨ì¸ê®Æ®w¤¤¡A¨Ã¨ú±o½s¸¹id
+		// åŠ å…¥åˆ°è³‡æ–™åº«ä¸­ï¼Œä¸¦å–å¾—ç·¨è™Ÿid
 		long id = db.insert(TABLE_NAME, null, cValues);
 		item.setId(id);
 
@@ -72,7 +72,7 @@ public class ItemDAO implements MapItem.ImapItemDAO {
 	@Override
 	public boolean update(MapItem item) {
 
-		// ¥[¤JContentValuesª«¥ó¸ê®Æ¥]¸Ë
+		// åŠ å…¥ContentValuesç‰©ä»¶è³‡æ–™åŒ…è£
 		ContentValues cValues = new ContentValues();
 		cValues.put(COLOR_COLUME, item.getColor());
 		cValues.put(POSITION_X_COLUME, item.getPosition()[0]);
@@ -126,10 +126,10 @@ public class ItemDAO implements MapItem.ImapItemDAO {
 	}
 
 	/**
-	 * Åª¨úCursor«ü¼Ğ
+	 * è®€å–CursoræŒ‡æ¨™
 	 * 
-	 * Äæ¦ì0:_id Äæ¦ì1:_datetime Äæ¦ì2:color Äæ¦ì3:positionX Äæ¦ì4:positionY Äæ¦ì5:content
-	 * Äæ¦ì6:status
+	 * æ¬„ä½0:_id æ¬„ä½1:_datetime æ¬„ä½2:color æ¬„ä½3:positionX æ¬„ä½4:positionY æ¬„ä½5:content
+	 * æ¬„ä½6:status
 	 */
 	@Override
 	public MapItem getRecord(Cursor cursor) {

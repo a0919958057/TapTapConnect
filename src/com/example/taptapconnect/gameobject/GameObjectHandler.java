@@ -44,9 +44,9 @@ public class GameObjectHandler implements Iterable<GameObject> {
 	}
 
 	/**
-	 * ¨ú±o¹CÀ¸ª«¥ó¶°¦Xª«¥ó¤§Á`¼Æ
+	 * å–å¾—éŠæˆ²ç‰©ä»¶é›†åˆç‰©ä»¶ä¹‹ç¸½æ•¸
 	 * 
-	 * @return ¹CÀ¸ª«¥ó¶°¦X Á`¼Æ
+	 * @return éŠæˆ²ç‰©ä»¶é›†åˆ ç¸½æ•¸
 	 */
 	public static int getHandlerCounter() {
 		return handlerCounter;
@@ -54,41 +54,41 @@ public class GameObjectHandler implements Iterable<GameObject> {
 	
 
 	/**
-	 * ³]©w¹CÀ¸ª«¥ó²âÅ¥¾¹
+	 * è¨­å®šéŠæˆ²ç‰©ä»¶è†è½å™¨
 	 * 
 	 * @param l
-	 *            ¹CÀ¸ª«¥ó²âÅ¥¾¹
+	 *            éŠæˆ²ç‰©ä»¶è†è½å™¨
 	 */
 	public void setListener(GameObjectListener l) {
 		this.listener = l;
 	}
 
 	/**
-	 * ¨ú±o¤º§t¤§¹CÀ¸ª«¥ó¼Æ¶q
+	 * å–å¾—å…§å«ä¹‹éŠæˆ²ç‰©ä»¶æ•¸é‡
 	 * 
-	 * @return ¹CÀ¸ª«¥ó¼Æ¶q
+	 * @return éŠæˆ²ç‰©ä»¶æ•¸é‡
 	 */
 	public int getCount() {
 		return gameObjects.size();
 	}
 
 	/**
-	 * ·s¼W¹CÀ¸ª«¥ó¦Ü°}¦C¤§§À¡A¥[¤J¨ìGameObjectHandler¸Ì¡C
+	 * æ–°å¢éŠæˆ²ç‰©ä»¶è‡³é™£åˆ—ä¹‹å°¾ï¼ŒåŠ å…¥åˆ°GameObjectHandlerè£¡ã€‚
 	 * 
-	 * @see java.util.ArrayDeque ¥H¦¹°}¦C¤§§Î¦¡§e²{
+	 * @see java.util.ArrayDeque ä»¥æ­¤é™£åˆ—ä¹‹å½¢å¼å‘ˆç¾
 	 * @param gameobject
-	 *            ­n·s¼Wªº¹CÀ¸ª«¥ó
+	 *            è¦æ–°å¢çš„éŠæˆ²ç‰©ä»¶
 	 */
 	public void add(GameObject gameobject) {
 		addLast(gameobject);
 	}
 
 	/**
-	 * ·s¼W¹CÀ¸ª«¥ó¦Ü°}¦C¤§§À¡A¥[¤J¨ìGameObjectHandler¸Ì¡C
+	 * æ–°å¢éŠæˆ²ç‰©ä»¶è‡³é™£åˆ—ä¹‹å°¾ï¼ŒåŠ å…¥åˆ°GameObjectHandlerè£¡ã€‚
 	 * 
-	 * @see java.util.ArrayDeque ¥H¦¹°}¦C¤§§Î¦¡§e²{
+	 * @see java.util.ArrayDeque ä»¥æ­¤é™£åˆ—ä¹‹å½¢å¼å‘ˆç¾
 	 * @param gameobject
-	 *            ­n·s¼Wªº¹CÀ¸ª«¥ó
+	 *            è¦æ–°å¢çš„éŠæˆ²ç‰©ä»¶
 	 */
 	public void addLast(GameObject gameobject) {
 		gameObjects.addLast(gameobject);
@@ -96,11 +96,11 @@ public class GameObjectHandler implements Iterable<GameObject> {
 	}
 
 	/**
-	 * ·s¼W¹CÀ¸ª«¥ó¦Ü°}¦C¤§ÀY¡A¥[¤J¨ìGameObjectHandler¸Ì¡C
+	 * æ–°å¢éŠæˆ²ç‰©ä»¶è‡³é™£åˆ—ä¹‹é ­ï¼ŒåŠ å…¥åˆ°GameObjectHandlerè£¡ã€‚
 	 * 
-	 * @see java.util.ArrayDeque ¥H¦¹°}¦C¤§§Î¦¡§e²{
+	 * @see java.util.ArrayDeque ä»¥æ­¤é™£åˆ—ä¹‹å½¢å¼å‘ˆç¾
 	 * @param gameobject
-	 *            ­n·s¼Wªº¹CÀ¸ª«¥ó
+	 *            è¦æ–°å¢çš„éŠæˆ²ç‰©ä»¶
 	 */
 	public void addFirst(GameObject gameobject) {
 		gameObjects.addFirst(gameobject);
@@ -108,24 +108,24 @@ public class GameObjectHandler implements Iterable<GameObject> {
 	}
 
 	/**
-	 * ¨ú±o°}¦C¤§ÀYªº¹CÀ¸ª«¥ó¡A¨Ã¥B²¾°£¤§¡C
-	 * @return ¹CÀ¸ª«¥ó
+	 * å–å¾—é™£åˆ—ä¹‹é ­çš„éŠæˆ²ç‰©ä»¶ï¼Œä¸¦ä¸”ç§»é™¤ä¹‹ã€‚
+	 * @return éŠæˆ²ç‰©ä»¶
 	 */
 	public GameObject pollGameObject() {
 		return pollFirstGameObject();
 	}
 
 	/**
-	 * ¨ú±o°}¦C¤§§Àªº¹CÀ¸ª«¥ó¡C
-	 * @return ¹CÀ¸ª«¥ó
+	 * å–å¾—é™£åˆ—ä¹‹å°¾çš„éŠæˆ²ç‰©ä»¶ã€‚
+	 * @return éŠæˆ²ç‰©ä»¶
 	 */
 	public GameObject peekGameObject() {
 		notifyListener(new GameEvent(this,gameObjects.peekLast(),GameEvent.GAME_OBJECT_CHANGE));
 		return gameObjects.peekLast();
 	}
 	/**
-	 * ¨ú±o°}¦C¤§ÀYªº¹CÀ¸ª«¥ó¡A¨Ã¥B²¾°£¤§¡C
-	 * @return ¹CÀ¸ª«¥ó
+	 * å–å¾—é™£åˆ—ä¹‹é ­çš„éŠæˆ²ç‰©ä»¶ï¼Œä¸¦ä¸”ç§»é™¤ä¹‹ã€‚
+	 * @return éŠæˆ²ç‰©ä»¶
 	 */
 	public GameObject pollFirstGameObject() {
 		GameObject tempObject = gameObjects.pollFirst();
@@ -139,8 +139,8 @@ public class GameObjectHandler implements Iterable<GameObject> {
 	}
 
 	/**
-	 * ¨ú±o°}¦C¤§§Àªº¹CÀ¸ª«¥ó¡A¨Ã¥B²¾°£¤§¡C
-	 * @return ¹CÀ¸ª«¥ó
+	 * å–å¾—é™£åˆ—ä¹‹å°¾çš„éŠæˆ²ç‰©ä»¶ï¼Œä¸¦ä¸”ç§»é™¤ä¹‹ã€‚
+	 * @return éŠæˆ²ç‰©ä»¶
 	 */
 	public GameObject pollLastGameObject() {
 		GameObject tempObject = gameObjects.pollLast();
@@ -182,7 +182,7 @@ public class GameObjectHandler implements Iterable<GameObject> {
 	}
 
 	/**
-	 * ¹CÀ¸ª«¥ó²âÅ¥¾¹
+	 * éŠæˆ²ç‰©ä»¶è†è½å™¨
 	 * 
 	 * @author ET
 	 */
@@ -199,34 +199,34 @@ public class GameObjectHandler implements Iterable<GameObject> {
 //		}
 		
 		/**
-		 * ·íª«¥ó¼Æ§ïÅÜ®É©I¥s
+		 * ç•¶ç‰©ä»¶æ•¸æ”¹è®Šæ™‚å‘¼å«
 		 * @param event 
 		 */
 		
 		public void onChange(GameEvent event);
 
 		/**
-		 * ·íª«¥ó¼Æ¬°ªÅ®É©I¥s
+		 * ç•¶ç‰©ä»¶æ•¸ç‚ºç©ºæ™‚å‘¼å«
 		 * @param event 
 		 */
 		public void onEmpty(GameEvent event);
 
 		/**
-		 * ·í¹CÀ¸ª«¥ó²¾°Ê«á©I¥s
+		 * ç•¶éŠæˆ²ç‰©ä»¶ç§»å‹•å¾Œå‘¼å«
 		 * @param event 
 		 * 
-		 * @return ·í­n¯dµ¹onTouch()®É¡A¦^¶Çfalse
+		 * @return ç•¶è¦ç•™çµ¦onTouch()æ™‚ï¼Œå›å‚³false
 		 */
 		public boolean onMove(GameEvent event);
 
 		/**
-		 * ·í¹CÀ¸ª«¥ó³QÂIÀ»«á©I¥s
+		 * ç•¶éŠæˆ²ç‰©ä»¶è¢«é»æ“Šå¾Œå‘¼å«
 		 * @param event 
 		 */
 		public void onTouch(GameEvent event);
 
 		/**
-		 * ·í¦³¹CÀ¸ª«¥ó³Q§R°£®É©I¥s
+		 * ç•¶æœ‰éŠæˆ²ç‰©ä»¶è¢«åˆªé™¤æ™‚å‘¼å«
 		 * @param event 
 		 */
 		public abstract void onDelete(GameEvent event);
